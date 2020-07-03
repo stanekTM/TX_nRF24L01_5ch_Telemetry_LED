@@ -7,7 +7,7 @@ RF24 radio(9, 10); //set CE and CSN pins
 
 const byte addresses[][6] = {"tx001", "rx002"};
 
-boolean buttonState = 0;
+boolean buttonState = 0; //test telemetry
 
 //**************************************************************************************************************************
 //structure size max 32 bytes **********************************************************************************************
@@ -69,40 +69,44 @@ void setup()
 {
   Serial.begin(9600);
 
-  pinMode(4, OUTPUT);
+  pinMode(4, OUTPUT); //test telemetry
 
   resetData(); //reset each channel value
   
   //define the radio communication
   radio.begin();
-  radio.setAutoAck(false);
+  
+  radio.setAutoAck(1);           //ensure autoACK is enabled
+  radio.enableAckPayload();      //allow optional ack payloads
+  radio.enableDynamicPayloads();
+  radio.setRetries(5, 5);                  // 5x250us delay (blocking!!), max. 5 retries
+  
   radio.setDataRate(RF24_250KBPS);
-  radio.setPALevel(RF24_PA_LOW);  
+  radio.setPALevel(RF24_PA_LOW); //set power amplifier(PA): RF24_PA_MIN, RF24_PA_LOW, RF24_PA_HIGH and RF24_PA_MAX  
 
-  radio.openWritingPipe(addresses[1]);    // rx002
-  radio.openReadingPipe(1, addresses[0]); // tx001
+  radio.openWritingPipe(addresses[1]);    //rx002
+  radio.openReadingPipe(1, addresses[0]); //tx001
 }
 
 //**************************************************************************************************************************
 //program loop *************************************************************************************************************
 //**************************************************************************************************************************
 void loop()
-{
-  delay(5); //5
-  radio.stopListening();                  //set the module as transmitter
-  radio.write(&rc_data, sizeof(tx_data)); //send the whole data from the structure to the receiver
-
-  delay(5);
-  radio.startListening(); //set the module as receiver
-  while (!radio.available());
-  radio.read(&buttonState, sizeof(buttonState));
-  if (buttonState == HIGH)
+{               
+  if (radio.write(&rc_data, sizeof(tx_data))) //send the whole data from the structure to the receiver
   {
-    digitalWrite(4, LOW);
-  }
-  else
-  {
-    digitalWrite(4, HIGH);
+    if (radio.isAckPayloadAvailable())
+    {
+      radio.read(&buttonState, sizeof(buttonState)); // read the payload, if available
+      if (buttonState == HIGH) //test telemetry
+      {
+        digitalWrite(4, LOW);
+      }
+      else
+      {
+        digitalWrite(4, HIGH);
+      }
+    }
   }
 
   inputDriver();
