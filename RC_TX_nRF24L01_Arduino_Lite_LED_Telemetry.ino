@@ -88,8 +88,8 @@ void setup()
 //**************************************************************************************************************************
 void loop()
 {
-  delay(1);
-  radio.stopListening(); //set the module as transmitter
+  delay(5); //5
+  radio.stopListening();                  //set the module as transmitter
   radio.write(&rc_data, sizeof(tx_data)); //send the whole data from the structure to the receiver
 
   delay(5);
@@ -105,8 +105,7 @@ void loop()
     digitalWrite(4, HIGH);
   }
 
-
   inputDriver();
 
 //  Serial.println(rc_data.ch7); //print value ​​on a serial monitor
-}
+} //end program loop
