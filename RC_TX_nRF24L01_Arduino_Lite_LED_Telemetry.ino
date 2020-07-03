@@ -76,15 +76,15 @@ void setup()
   //define the radio communication
   radio.begin();
   
-  radio.setAutoAck(1);           //ensure autoACK is enabled
-  radio.enableAckPayload();      //allow optional ack payloads
+  radio.setAutoAck(1);             //ensure autoACK is enabled
+  radio.enableAckPayload();        //allow optional ack payloads
   radio.enableDynamicPayloads();
-  radio.setRetries(5, 5);                  // 5x250us delay (blocking!!), max. 5 retries
+  radio.setRetries(5, 5);          //minimum time between retries(5x 250 us delay (blocking !), max. 5 retries)
   
   radio.setDataRate(RF24_250KBPS);
-  radio.setPALevel(RF24_PA_LOW); //set power amplifier(PA): RF24_PA_MIN, RF24_PA_LOW, RF24_PA_HIGH and RF24_PA_MAX  
+  radio.setPALevel(RF24_PA_LOW);   //set power amplifier(PA): RF24_PA_MIN, RF24_PA_LOW, RF24_PA_HIGH and RF24_PA_MAX  
 
-  radio.openWritingPipe(addresses[1]);    //rx002
+  radio.openWritingPipe(addresses[1]);    //rx002, both radios listen on the same pipes by default, and switch when writing
   radio.openReadingPipe(1, addresses[0]); //tx001
 }
 
@@ -93,11 +93,11 @@ void setup()
 //**************************************************************************************************************************
 void loop()
 {               
-  if (radio.write(&rc_data, sizeof(tx_data))) //send the whole data from the structure to the receiver
+  if (radio.write(&rc_data, sizeof(tx_data))) //send all data from the structure and check if the transfer was successful
   {
     if (radio.isAckPayloadAvailable())
     {
-      radio.read(&buttonState, sizeof(buttonState)); // read the payload, if available
+      radio.read(&buttonState, sizeof(buttonState)); //read the payload, if available
       if (buttonState == HIGH) //test telemetry
       {
         digitalWrite(4, LOW);
