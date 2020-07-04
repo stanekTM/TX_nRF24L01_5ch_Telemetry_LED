@@ -98,18 +98,26 @@ void loop()
     if (radio.isAckPayloadAvailable())
     {
       radio.read(&vcc, sizeof(vcc)); //read the payload, if available
-      if (vcc == LOW) //led telemetry
-      {
-        digitalWrite(4, LOW);
-      }
-      else
-      {
-        digitalWrite(4, HIGH);
-      }
     }
   }
 
   inputDriver();
+  led_indication();
 
 //  Serial.println(rc_data.ch1); //print value ​​on a serial monitor
 } //end program loop
+
+//**************************************************************************************************************************
+//telemetry with undervoltage detection by LED indication ******************************************************************
+//**************************************************************************************************************************
+void led_indication()
+{
+  if (vcc == LOW)
+  {
+    digitalWrite(4, LOW);
+  }
+  else
+  {
+    digitalWrite(4, HIGH);
+  }
+}
