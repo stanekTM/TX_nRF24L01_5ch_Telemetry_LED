@@ -7,7 +7,7 @@ RF24 radio(9, 10); //set CE and CSN pins
 
 const byte addresses[][6] = {"tx001", "rx002"};
 
-boolean buttonState = 0; //test telemetry
+float vcc; //led telemetry
 
 //**************************************************************************************************************************
 //structure size max 32 bytes **********************************************************************************************
@@ -69,7 +69,7 @@ void setup()
 {
   Serial.begin(9600);
 
-  pinMode(4, OUTPUT); //test telemetry
+  pinMode(4, OUTPUT); //led telemetry
 
   resetData(); //reset each channel value
   
@@ -97,8 +97,8 @@ void loop()
   {
     if (radio.isAckPayloadAvailable())
     {
-      radio.read(&buttonState, sizeof(buttonState)); //read the payload, if available
-      if (buttonState == HIGH) //test telemetry
+      radio.read(&vcc, sizeof(vcc)); //read the payload, if available
+      if (vcc == LOW) //led telemetry
       {
         digitalWrite(4, LOW);
       }
@@ -111,5 +111,5 @@ void loop()
 
   inputDriver();
 
-//  Serial.println(rc_data.ch7); //print value ​​on a serial monitor
+//  Serial.println(rc_data.ch1); //print value ​​on a serial monitor
 } //end program loop
