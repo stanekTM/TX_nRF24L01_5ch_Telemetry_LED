@@ -7,8 +7,6 @@ RF24 radio(9, 10); //set CE and CSN pins
 
 const byte addresses[][6] = {"tx001", "rx002"};
 
-float vcc; //led telemetry
-
 //**************************************************************************************************************************
 //structure size max 32 bytes **********************************************************************************************
 //**************************************************************************************************************************
@@ -23,8 +21,16 @@ struct tx_data
   byte ch7;
   byte ch8;
 };
-
 tx_data rc_data; //Create a variable with the above structure
+
+//**************************************************************************************************************************
+//this struct defines data, which are embedded inside the ACK payload ******************************************************
+//**************************************************************************************************************************
+struct ackPayload
+{
+  float vcc; //led telemetry
+};
+ackPayload payload;
 
 //**************************************************************************************************************************
 //reset values ​​(min = 0, mid = 127, max = 255) *****************************************************************************
@@ -97,14 +103,14 @@ void loop()
   {
     if (radio.isAckPayloadAvailable())
     {
-      radio.read(&vcc, sizeof(vcc)); //read the payload, if available
+      radio.read(&payload, sizeof(ackPayload)); //read the payload, if available
     }
   }
 
   inputDriver();
   led_indication();
 
-//  Serial.println(rc_data.ch1); //print value ​​on a serial monitor
+//  Serial.println(rc_data.ch8); //print value ​​on a serial monitor
 } //end program loop
 
 //**************************************************************************************************************************
@@ -112,12 +118,13 @@ void loop()
 //**************************************************************************************************************************
 void led_indication()
 {
-  if (vcc == LOW)
+  if (payload.vcc == LOW)
   {
-    digitalWrite(4, LOW);
+    digitalWrite(4, LOW); //0.00
   }
   else
   {
-    digitalWrite(4, HIGH);
+    digitalWrite(4, HIGH); //1.00
   }
 }
+  
