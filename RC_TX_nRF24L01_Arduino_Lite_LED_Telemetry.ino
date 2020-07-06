@@ -3,7 +3,27 @@
 #include <nRF24L01.h> //https://github.com/nRF24/RF24 
 #include <RF24.h>     //https://github.com/nRF24/RF24
 
-RF24 radio(9, 10); //set CE and CSN pins
+//pins for driver
+#define driv1   A0
+#define driv2   A1
+#define driv3   A2
+#define driv4   A3
+#define driv5   2
+#define driv6   3
+#define driv7   A4
+#define driv8   A5
+
+//led telemetry
+#define ledVCC  4
+
+//pins for nRF24L01
+#define CE      9
+#define CSN     10
+//***** MOSI    11
+//***** MISO    12
+//***** SCK     13
+
+RF24 radio(CE, CSN); //set CE and CSN pins
 
 const byte addresses[][6] = {"tx001", "rx002"};
 
@@ -58,14 +78,14 @@ void inputDriver()
  * Reversed:  rc_data.ch1 = map( analogRead(A0), 0, 1023, 255, 0);
  * Convert the analog read value from 0 to 1023 into a byte value from 0 to 255
  */ 
-  rc_data.ch1 = map(analogRead(A0), 0, 1023, 0, 255);
-  rc_data.ch2 = map(analogRead(A1), 0, 1023, 0, 255);
-  rc_data.ch3 = map(analogRead(A2), 0, 1023, 0, 255);
-  rc_data.ch4 = map(analogRead(A3), 0, 1023, 0, 255);
-  rc_data.ch5 = digitalRead(2);
-  rc_data.ch6 = digitalRead(3);
-  rc_data.ch7 = map(analogRead(A4), 333, 691, 7, 255); //Hitec Ranger throttle 333, 691, 7, 255
-  rc_data.ch8 = map(analogRead(A5), 330, 694, 4, 255); //Hitec Ranger steering 330, 694, 4, 255
+  rc_data.ch1 = map(analogRead(driv1), 0, 1023, 0, 255);
+  rc_data.ch2 = map(analogRead(driv2), 0, 1023, 0, 255);
+  rc_data.ch3 = map(analogRead(driv3), 0, 1023, 0, 255);
+  rc_data.ch4 = map(analogRead(driv4), 0, 1023, 0, 255);
+  rc_data.ch5 = digitalRead(driv5);
+  rc_data.ch6 = digitalRead(driv6);
+  rc_data.ch7 = map(analogRead(driv7), 333, 691, 7, 255); //Hitec Ranger throttle 333, 691, 7, 255
+  rc_data.ch8 = map(analogRead(driv8), 330, 694, 4, 255); //Hitec Ranger steering 330, 694, 4, 255
 }
 
 //**************************************************************************************************************************
@@ -75,7 +95,7 @@ void setup()
 {
   Serial.begin(9600);
 
-  pinMode(4, OUTPUT); //led telemetry
+  pinMode(ledVCC, OUTPUT); //led telemetry
 
   resetData(); //reset each channel value
   
@@ -99,7 +119,7 @@ void setup()
 //**************************************************************************************************************************
 void loop()
 {               
-  if (radio.write(&rc_data, sizeof(tx_data))) //send all data from the structure and check if the transfer was successful
+  if (radio.write(&rc_data, sizeof(tx_data)))   //send all data from the structure and check if the transfer was successful
   {
     if (radio.isAckPayloadAvailable())
     {
@@ -120,11 +140,11 @@ void led_indication()
 {
   if (payload.vcc == LOW)
   {
-    digitalWrite(4, LOW); //0.00
+    digitalWrite(ledVCC, LOW);  //0.00
   }
   else
   {
-    digitalWrite(4, HIGH); //1.00
+    digitalWrite(ledVCC, HIGH); //1.00
   }
 }
   
