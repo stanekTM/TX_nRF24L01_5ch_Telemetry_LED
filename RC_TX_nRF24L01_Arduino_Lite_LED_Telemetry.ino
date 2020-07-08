@@ -113,11 +113,10 @@ void setup()
 
   radio.stopListening(); //set the module as transmitter. Stop listening for incoming messages, and switch to transmit mode
   
-  radio.openWritingPipe(addresses[1]);      //(address 2, rx002) open a pipe for writing via byte array. Call "stopListening" first
-  
-//  radio.openReadingPipe(1, addresses[0]); //(address 1, tx001) open all the required reading pipes, and then call "startListening"
-                                            //which number pipe to open (0-5)
-                                            //the 24, 32 or 40 bit address of the pipe to open
+  radio.openWritingPipe(addresses[1]);    //(address 2, rx002) open a pipe for writing via byte array. Call "stopListening" first
+  radio.openReadingPipe(1, addresses[0]); //(address 1, tx001) open all the required reading pipes, and then call "startListening"
+                                          //which number pipe to open (0-5)
+                                          //the 24, 32 or 40 bit address of the pipe to open
 }
 
 //**************************************************************************************************************************
