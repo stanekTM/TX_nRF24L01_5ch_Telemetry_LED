@@ -74,16 +74,16 @@ void inputDriver()
 {
 /*
  * Read all analog inputs and map them to one byte value
- * Normal:    rc_data.ch1 = map( analogRead(A0), 0, 1023, 0, 255);
- * Reversed:  rc_data.ch1 = map( analogRead(A0), 0, 1023, 255, 0);
+ * Normal:    rc_data.ch1 = map(analogRead(A0), 0, 1023, 0, 255);
+ * Reversed:  rc_data.ch1 = map(analogRead(A0), 0, 1023, 255, 0);
  * Convert the analog read value from 0 to 1023 into a byte value from 0 to 255
  */ 
-  rc_data.ch1 = map(analogRead(driv1), 0, 1023, 0, 255);
-  rc_data.ch2 = map(analogRead(driv2), 0, 1023, 0, 255);
-  rc_data.ch3 = map(analogRead(driv3), 0, 1023, 0, 255);
-  rc_data.ch4 = map(analogRead(driv4), 0, 1023, 0, 255);
-  rc_data.ch5 = digitalRead(driv5);
-  rc_data.ch6 = digitalRead(driv6);
+  rc_data.ch1 = map(analogRead(driv1),  0, 1023, 0, 255);
+  rc_data.ch2 = map(analogRead(driv2),  0, 1023, 0, 255);
+  rc_data.ch3 = map(analogRead(driv3),  0, 1023, 0, 255);
+  rc_data.ch4 = map(analogRead(driv4),  0, 1023, 0, 255);
+  rc_data.ch5 =    digitalRead(driv5);
+  rc_data.ch6 =    digitalRead(driv6);
   rc_data.ch7 = map(analogRead(driv7), 333, 691, 7, 255); //Hitec Ranger throttle 333, 691, 7, 255
   rc_data.ch8 = map(analogRead(driv8), 330, 694, 4, 255); //Hitec Ranger steering 330, 694, 4, 255
 }
@@ -102,35 +102,43 @@ void setup()
   //define the radio communication
   radio.begin();
   
-  radio.setAutoAck(1);             //ensure autoACK is enabled
-  radio.enableAckPayload();        //allow optional ack payloads
-  radio.enableDynamicPayloads();
-  radio.setRetries(5, 5);          //minimum time between retries(5x 250 us delay (blocking !), max. 5 retries)
-  
-  radio.setDataRate(RF24_250KBPS);
-  radio.setPALevel(RF24_PA_LOW);   //set power amplifier(PA): RF24_PA_MIN, RF24_PA_LOW, RF24_PA_HIGH and RF24_PA_MAX  
+  radio.setAutoAck(1);             //ensure autoACK is enabled (address 1, tx001)
+  radio.enableAckPayload();        //enable custom ack payloads on the acknowledge packets
+  radio.enableDynamicPayloads();   //enable dynamically-sized payloads
+  radio.setRetries(5, 5);          //set the number and delay of retries on failed submit (max. 15 x 250us delay (blocking !), max. 15 retries)
 
-  radio.openWritingPipe(addresses[1]);    //rx002, both radios listen on the same pipes by default, and switch when writing
-  radio.openReadingPipe(1, addresses[0]); //tx001
+  radio.setChannel(76);            //which RF channel to communicate on (0-125, default 76) 
+  radio.setDataRate(RF24_250KBPS); //RF24_250KBPS (fails for units without +), RF24_1MBPS, RF24_2MBPS
+  radio.setPALevel(RF24_PA_MIN);   //RF24_PA_MIN (-18dBm), RF24_PA_LOW (-12dBm), RF24_PA_HIGH (-6dbm), RF24_PA_MAX (0dBm)
+
+  radio.stopListening(); //set the module as transmitter. Stop listening for incoming messages, and switch to transmit mode
+  
+  radio.openWritingPipe(addresses[1]);      //(address 2, rx002) open a pipe for writing via byte array. Call "stopListening" first
+  
+//  radio.openReadingPipe(1, addresses[0]); //(address 1, tx001) open all the required reading pipes, and then call "startListening"
+                                            //which number pipe to open (0-5)
+                                            //the 24, 32 or 40 bit address of the pipe to open
 }
 
 //**************************************************************************************************************************
 //program loop *************************************************************************************************************
 //**************************************************************************************************************************
 void loop()
-{               
-  if (radio.write(&rc_data, sizeof(tx_data)))   //send all data from the structure and check if the transfer was successful
-  {
-    if (radio.isAckPayloadAvailable())
+{              
+  if (radio.write(&rc_data, sizeof(tx_data)))   //"write" send all data from the structure and check if the transfer was successful
+  {                                             //"rc_data" pointer to the data to be sent
+                                                //"tx_data" number of bytes to be sent
+                                              
+    if (radio.isAckPayloadAvailable()) //determine if an ack payload was received in the most recent call to "write". The regular "available" can also be used
     {
-      radio.read(&payload, sizeof(ackPayload)); //read the payload, if available
-    }
-  }
+      radio.read(&payload, sizeof(ackPayload)); //"read" retrieve the ack payload
+    }                                           //"payload" pointer to a buffer where the data should be written
+  }                                             //"ackPayload" maximum number of bytes to read into the buffer
 
   inputDriver();
   led_indication();
 
-//  Serial.println(rc_data.ch8); //print value ​​on a serial monitor
+//  Serial.println(payload.vcc); //print value ​​on a serial monitor
 } //end program loop
 
 //**************************************************************************************************************************
@@ -138,7 +146,7 @@ void loop()
 //**************************************************************************************************************************
 void led_indication()
 {
-  if (payload.vcc == LOW)
+  if (payload.vcc == LOW) 
   {
     digitalWrite(ledVCC, LOW);  //0.00
   }
