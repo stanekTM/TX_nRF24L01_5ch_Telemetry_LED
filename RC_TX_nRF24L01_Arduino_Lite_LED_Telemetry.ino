@@ -84,8 +84,9 @@ void inputDriver()
   rc_data.ch4 = map(analogRead(driv4),  0, 1023, 0, 255);
   rc_data.ch5 =    digitalRead(driv5);
   rc_data.ch6 =    digitalRead(driv6);
-  rc_data.ch7 = map(analogRead(driv7), 333, 691, 7, 255); //Hitec Ranger throttle 333, 691, 7, 255
-  rc_data.ch8 = map(analogRead(driv8), 330, 694, 4, 255); //Hitec Ranger steering 330, 694, 4, 255
+//steering, throttle ---------------------------------------------------------------------------  
+  rc_data.ch7 = map(analogRead(driv7), 333, 690, 0, 255); //steering (333, 690) Hitec Ranger AM
+  rc_data.ch8 = map(analogRead(driv8), 333, 690, 0, 255); //throttle (333, 690) Hitec Ranger AM 
 }
 
 //**************************************************************************************************************************
@@ -137,7 +138,7 @@ void loop()
   inputDriver();
   led_indication();
 
-//  Serial.println(payload.vcc); //print value ​​on a serial monitor
+  Serial.println(rc_data.ch7); //print value ​​on a serial monitor
 } //end program loop
 
 //**************************************************************************************************************************
