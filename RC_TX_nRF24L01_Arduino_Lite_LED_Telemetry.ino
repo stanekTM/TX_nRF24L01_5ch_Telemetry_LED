@@ -13,7 +13,7 @@
 #define driv7    A4
 #define driv8    A5
 
-//led telemetry
+//LED telemetry
 #define ledRXvcc 4
 
 //pins for nRF24L01
@@ -98,7 +98,7 @@ void setup()
 {
   Serial.begin(9600);
 
-  pinMode(ledRXvcc, OUTPUT); //led telemetry
+  pinMode(ledRXvcc, OUTPUT); //LED telemetry
 
   resetData(); //reset each channel value
   
@@ -146,14 +146,25 @@ void loop()
 //telemetry with undervoltage detection by LED indication ******************************************************************
 //**************************************************************************************************************************
 unsigned long ledTime = 0;
+int ledState = LOW;
 
 void led_indication()
 {
-  if(millis() >= ledTime + 150) //1000 (1second)
+  if(millis() >= ledTime + 500) //1000 (1second)
   {
     ledTime = millis();
     
-    digitalWrite(ledRXvcc, payload.RXvcc);
+    if (ledState >= payload.RXvcc)
+    {
+     ledState = LOW;
+    }
+    else
+    {
+      ledState = HIGH;
+    }
+    digitalWrite(ledRXvcc, ledState);
+    
+//    digitalWrite(ledRXvcc, payload.RXvcc); //LED indication without flashing
   }  
 }
   
