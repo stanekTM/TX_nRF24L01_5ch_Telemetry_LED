@@ -4,24 +4,24 @@
 #include <RF24.h>     //https://github.com/nRF24/RF24
 
 //pins for driver
-#define driv1   A0
-#define driv2   A1
-#define driv3   A2
-#define driv4   A3
-#define driv5   2
-#define driv6   3
-#define driv7   A4
-#define driv8   A5
+#define driv1    A0
+#define driv2    A1
+#define driv3    A2
+#define driv4    A3
+#define driv5    2
+#define driv6    3
+#define driv7    A4
+#define driv8    A5
 
 //led telemetry
-#define ledVCC  4
+#define ledRXvcc 4
 
 //pins for nRF24L01
-#define CE      9
-#define CSN     10
-//***** MOSI    11
-//***** MISO    12
-//***** SCK     13
+#define CE       9
+#define CSN      10
+//***** MOSI     11
+//***** MISO     12
+//***** SCK      13
 
 RF24 radio(CE, CSN); //set CE and CSN pins
 
@@ -48,7 +48,7 @@ tx_data rc_data; //Create a variable with the above structure
 //**************************************************************************************************************************
 struct ackPayload
 {
-  float vcc; //led telemetry
+  float RXvcc; //led telemetry
 };
 ackPayload payload;
 
@@ -98,7 +98,7 @@ void setup()
 {
   Serial.begin(9600);
 
-  pinMode(ledVCC, OUTPUT); //led telemetry
+  pinMode(ledRXvcc, OUTPUT); //led telemetry
 
   resetData(); //reset each channel value
   
@@ -153,7 +153,7 @@ void led_indication()
   {
     ledTime = millis();
     
-    digitalWrite(ledVCC, payload.vcc);
+    digitalWrite(ledRXvcc, payload.RXvcc);
   }  
 }
   
