@@ -14,7 +14,8 @@
 #define driv8   A5
 
 //led telemetry
-#define ledVCC  4
+//#define ledVCC  4
+const int ledVCC = 4;
 
 //pins for nRF24L01
 #define CE      9
@@ -84,7 +85,7 @@ void inputDriver()
   rc_data.ch4 = map(analogRead(driv4),  0, 1023, 0, 255);
   rc_data.ch5 =    digitalRead(driv5);
   rc_data.ch6 =    digitalRead(driv6);
-//steering, throttle ---------------------------------------------------------------------------  
+//steering, throttle --------------------------------------------------------------------------- 
   rc_data.ch7 = map(analogRead(driv7), 333, 690, 0, 255); //steering (333, 690) Hitec Ranger AM
   rc_data.ch8 = map(analogRead(driv8), 333, 690, 0, 255); //throttle (333, 690) Hitec Ranger AM 
 }
@@ -138,21 +139,24 @@ void loop()
   inputDriver();
   led_indication();
 
-  Serial.println(rc_data.ch7); //print value ​​on a serial monitor
+  Serial.println(rc_data.ch8); //print value ​​on a serial monitor
 } //end program loop
 
 //**************************************************************************************************************************
 //telemetry with undervoltage detection by LED indication ******************************************************************
 //**************************************************************************************************************************
+unsigned long previousMillis = 0; 
+const long interval = 200; //1000
+
 void led_indication()
 {
-  if (payload.vcc == LOW) 
+  unsigned long currentMillis = millis();
+  
+  if (currentMillis - previousMillis >= interval)
   {
-    digitalWrite(ledVCC, LOW);  //0.00
-  }
-  else
-  {
-    digitalWrite(ledVCC, HIGH); //1.00
+    previousMillis = currentMillis;
+    
+    digitalWrite(ledVCC, payload.vcc);
   }
 }
   
