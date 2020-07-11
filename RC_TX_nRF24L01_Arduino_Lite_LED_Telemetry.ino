@@ -146,7 +146,7 @@ void loop()
 //telemetry with undervoltage detection by LED indication ******************************************************************
 //**************************************************************************************************************************
 unsigned long ledTime = 0;
-int ledState = LOW;
+int ledState;
 
 void led_indication()
 {
@@ -154,7 +154,7 @@ void led_indication()
   {
     ledTime = millis();
     
-    if (ledState >= payload.RXvcc)
+    if (ledState >= !payload.RXvcc + HIGH)
     {
      ledState = LOW;
     }
@@ -163,8 +163,8 @@ void led_indication()
       ledState = HIGH;
     }
     digitalWrite(ledRXvcc, ledState);
-    
+      
 //    digitalWrite(ledRXvcc, payload.RXvcc); //LED indication without flashing
-  }  
+  } 
 }
   
