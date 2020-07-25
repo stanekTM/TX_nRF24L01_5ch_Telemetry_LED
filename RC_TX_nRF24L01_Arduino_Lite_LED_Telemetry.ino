@@ -127,18 +127,16 @@ void setup()
 //**************************************************************************************************************************
 void loop()
 {              
-  if (radio.write(&rc_data, sizeof(tx_data)))   //"write" send all data from the structure and check if the transfer was successful
-  {                                             //"rc_data" pointer to the data to be sent
-                                                //"tx_data" number of bytes to be sent
-                                              
-    if (radio.isAckPayloadAvailable()) //determine if an ack payload was received in the most recent call to "write". The regular "available" can also be used
+  if (radio.write(&rc_data, sizeof(tx_data)))   //"write" send all data from the structure and check if the transfer was successful, "rc_data" pointer to the data to be sent, "tx_data" number of bytes to be sent
+  {                                                                                      
+    if (radio.isAckPayloadAvailable())          //determine if an ack payload was received in the most recent call to "write". The regular "available" can also be used
     {
-      radio.read(&payload, sizeof(ackPayload)); //"read" retrieve the ack payload
-    }                                           //"payload" pointer to a buffer where the data should be written
-  }                                             //"ackPayload" maximum number of bytes to read into the buffer
+      radio.read(&payload, sizeof(ackPayload)); //"read" retrieve the ack payload, "payload" pointer to a buffer where the data should be written, "ackPayload" maximum number of bytes to read into the buffer
+      led_indication();                        
+    }                                           
+  }                                             
 
   inputDriver();
-  led_indication();
 
 } //end program loop
 
