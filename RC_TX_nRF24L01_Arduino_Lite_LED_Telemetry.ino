@@ -95,7 +95,7 @@ void inputDriver()
 //initial main settings ****************************************************************************************************
 //**************************************************************************************************************************
 void setup()
-{
+{ 
   Serial.begin(9600);
 
   pinMode(ledRXvcc, OUTPUT); //LED telemetry
@@ -114,7 +114,7 @@ void setup()
   radio.setDataRate(RF24_250KBPS); //RF24_250KBPS (fails for units without +), RF24_1MBPS, RF24_2MBPS
   radio.setPALevel(RF24_PA_MIN);   //RF24_PA_MIN (-18dBm), RF24_PA_LOW (-12dBm), RF24_PA_HIGH (-6dbm), RF24_PA_MAX (0dBm)
 
-  radio.stopListening(); //set the module as transmitter. Stop listening for incoming messages, and switch to transmit mode
+  radio.stopListening();           //set the module as transmitter. Stop listening for incoming messages, and switch to transmit mode
   
   radio.openWritingPipe(addresses[1]);    //(address 2, rx002) open a pipe for writing via byte array. Call "stopListening" first
   radio.openReadingPipe(1, addresses[0]); //(address 1, tx001) open all the required reading pipes, and then call "startListening"
@@ -127,13 +127,17 @@ void setup()
 //**************************************************************************************************************************
 void loop()
 {              
-  if (radio.write(&rc_data, sizeof(tx_data)))   //"write" send all data from the structure and check if the transfer was successful, "rc_data" pointer to the data to be sent, "tx_data" number of bytes to be sent
+  if (radio.write(&rc_data, sizeof(tx_data)))   //"write" send all data from the structure and check if the transfer was successful
+                                                //"rc_data" pointer to the data to be sent
+                                                //"tx_data" number of bytes to be sent
   {                                                                                      
     if (radio.isAckPayloadAvailable())          //determine if an ack payload was received in the most recent call to "write". The regular "available" can also be used
     {
-      radio.read(&payload, sizeof(ackPayload)); //"read" retrieve the ack payload, "payload" pointer to a buffer where the data should be written, "ackPayload" maximum number of bytes to read into the buffer
-      led_indication();                        
-    }                                           
+      radio.read(&payload, sizeof(ackPayload)); //"read" retrieve the ack payload
+                                                //"payload" pointer to a buffer where the data should be written
+                                                //"ackPayload" maximum number of bytes to read into the buffer
+      led_indication();
+    }                                
   }                                             
 
   inputDriver();
@@ -154,15 +158,15 @@ void led_indication()
     
     if (ledState >= !payload.RXvcc + HIGH)
     {
-     ledState = LOW;
+      ledState = LOW;
     }
     else
     {
       ledState = HIGH;
-    }
+    }   
     digitalWrite(ledRXvcc, ledState);
       
 //    digitalWrite(ledRXvcc, payload.RXvcc); //LED indication without flashing
-  } 
+  }
 }
-  
+   
