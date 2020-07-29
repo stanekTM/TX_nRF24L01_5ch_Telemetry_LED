@@ -14,7 +14,7 @@
 #define driv8    A5
 
 //LED telemetry RX vcc/RF data off
-#define ledTX    4
+#define led      4
 
 //pins for nRF24L01
 #define CE       9
@@ -98,7 +98,7 @@ void setup()
 { 
   Serial.begin(9600);
 
-  pinMode(ledTX, OUTPUT); //LED telemetry RX vcc/RF data off
+  pinMode(led, OUTPUT); //LED telemetry RX vcc/RF data off
 
   resetData(); //reset each channel value
   
@@ -188,9 +188,9 @@ void RFon_indication()
     {
       ledState = HIGH;
     }   
-    digitalWrite(ledTX, ledState);
+    digitalWrite(led, ledState);
       
-//    digitalWrite(ledTX, payload.RXvcc); //LED indication without flashing
+//    digitalWrite(led, payload.RXvcc); //LED indication without flashing
   }
 }
 
@@ -211,7 +211,7 @@ void RFoff_indication()
     {
       ledState = HIGH;
     }   
-    digitalWrite(ledTX, ledState);
+    digitalWrite(led, ledState);
   }
 }
   
