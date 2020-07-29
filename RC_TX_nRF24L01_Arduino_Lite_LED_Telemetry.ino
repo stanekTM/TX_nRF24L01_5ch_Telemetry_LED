@@ -13,7 +13,7 @@
 #define driv7    A4
 #define driv8    A5
 
-//LED telemetry RX vcc/RF data off
+//led telemetry RX vcc, RF on/off
 #define led      4
 
 //pins for nRF24L01
@@ -98,7 +98,7 @@ void setup()
 { 
   Serial.begin(9600);
 
-  pinMode(led, OUTPUT); //LED telemetry RX vcc/RF data off
+  pinMode(led, OUTPUT); //led telemetry RX vcc, RF on/off
 
   resetData(); //reset each channel value
   
