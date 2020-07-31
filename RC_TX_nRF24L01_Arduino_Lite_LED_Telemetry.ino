@@ -1,7 +1,7 @@
 
-#include <SPI.h>      //https://github.com/arduino/ArduinoCore-avr/tree/master/libraries/SPI
-#include <nRF24L01.h> //https://github.com/nRF24/RF24 
 #include <RF24.h>     //https://github.com/nRF24/RF24
+#include <nRF24L01.h> //https://github.com/nRF24/RF24
+#include <SPI.h>      //https://github.com/arduino/ArduinoCore-avr/tree/master/libraries/SPI 
 
 //pins for driver
 #define driv1    A0
@@ -13,22 +13,31 @@
 #define driv7    A4
 #define driv8    A5
 
-//led telemetry RX vcc, RF on/off
+//free pins      5
+//free pins      6
+//free pins      7
+//free pins      8
+//free pins      A6
+//free pins      A7
+
+//RX vcc, RF on/off TX LED
 #define led      4
 
 //pins for nRF24L01
 #define CE       9
 #define CSN      10
-//***** MOSI     11
-//***** MISO     12
-//***** SCK      13
 
-RF24 radio(CE, CSN); //set CE and CSN pins
+//hardware SPI
+//----- MOSI     11 
+//----- MISO     12 
+//----- SCK      13 
+
+RF24 radio(CE, CSN); //setup CE and CSN pins
 
 const byte addresses[][6] = {"tx001", "rx002"};
 
 //************************************************************************************************************************************************************************
-//structure size max 32 bytes ********************************************************************************************************************************************
+//this structure defines the sent data in bytes (structure size max. 32 bytes) *******************************************************************************************
 //************************************************************************************************************************************************************************
 struct tx_data
 {
@@ -41,14 +50,14 @@ struct tx_data
   byte ch7;
   byte ch8;
 };
-tx_data rc_data; //Create a variable with the above structure
+tx_data rc_data; //create a variable with the above structure
 
 //************************************************************************************************************************************************************************
 //this struct defines data, which are embedded inside the ACK payload ****************************************************************************************************
 //************************************************************************************************************************************************************************
 struct ackPayload
 {
-  float RXvcc; //led telemetry
+  float RXvcc; //telemetry RX vcc
 };
 ackPayload payload;
 
@@ -98,7 +107,7 @@ void setup()
 { 
   Serial.begin(9600);
 
-  pinMode(led, OUTPUT); //led telemetry RX vcc, RF on/off
+  pinMode(led, OUTPUT); //RX vcc, RF on/off TX LED
 
   resetData(); //reset each channel value
   
@@ -117,7 +126,7 @@ void setup()
   radio.stopListening();           //set the module as transmitter. Stop listening for incoming messages, and switch to transmit mode
   
   radio.openWritingPipe(addresses[1]);    //(address 2, rx002) open a pipe for writing via byte array. Call "stopListening" first
-  radio.openReadingPipe(1, addresses[0]); //(address 1, tx001) open all the required reading pipes, and then call "startListening"
+  radio.openReadingPipe(1, addresses[0]); //(address 1, tx001) open all the required reading pipes
                                           //which number pipe to open (0-5)
                                           //the 24, 32 or 40 bit address of the pipe to open
 }
