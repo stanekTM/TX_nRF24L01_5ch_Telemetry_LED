@@ -13,12 +13,13 @@
 #define driv7    A4
 #define driv8    A5
 
-//free pins      5
-//free pins      6
-//free pins      7
-//free pins      8
-//free pins      A6
-//free pins      A7
+//free pins
+//pin            5
+//pin            6
+//pin            7
+//pin            8
+//pin            A6
+//pin            A7
 
 //RX vcc, RF on/off TX LED
 #define led      4
