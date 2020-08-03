@@ -3,26 +3,28 @@
 #include <nRF24L01.h> //https://github.com/nRF24/RF24
 #include <SPI.h>      //https://github.com/arduino/ArduinoCore-avr/tree/master/libraries/SPI 
 
-//pins for driver
-#define driv1    A0
-#define driv2    A1
-#define driv3    A2
-#define driv4    A3
-#define driv5    2
-#define driv6    3
-#define driv7    A4
-#define driv8    A5
-
 //free pins
 //pin            5
 //pin            6
 //pin            7
 //pin            8
-//pin            A6
 //pin            A7
 
-//RX vcc, RF on/off TX LED
+//pins for driver
+#define driv1    A0
+#define driv2    A1
+#define driv3    A3
+#define driv4    A6
+#define driv5    2
+#define driv6    3
+#define driv7    A4
+#define driv8    A5
+
+//TX RX vcc, RF on/off TX LED
 #define led      4
+
+//input TX vcc
+#define inTXvcc  A2
 
 //pins for nRF24L01
 #define CE       9
@@ -108,7 +110,8 @@ void setup()
 { 
   Serial.begin(9600);
 
-  pinMode(led, OUTPUT); //RX vcc, RF on/off TX LED
+  pinMode(led, OUTPUT); //TX RX vcc, RF on/off TX LED
+  pinMode(inTXvcc, INPUT); //input TX vcc
 
   resetData(); //reset each channel value
   
@@ -141,6 +144,8 @@ void loop()
   send_and_receive_data();
                                                             
   inputDriver();
+
+  battery_voltage();
 
 } //end program loop
 
@@ -179,10 +184,28 @@ void send_and_receive_data()
 }
 
 //************************************************************************************************************************************************************************
+//voltage detection of the TX transmitter's supply battery ***************************************************************************************************************
+//************************************************************************************************************************************************************************
+float TXvcc = 0;
+
+void battery_voltage()
+{
+  //---------------------------- vcc ------------ monitored voltage
+  TXvcc = analogRead(inTXvcc) * (4.2 / 1023.0) <= 3.3;
+  
+  if (TXvcc)
+  {
+    TXvcc_indication();
+  }
+
+//  Serial.println(TXvcc); //print value ​​on a serial monitor 
+}
+
+//************************************************************************************************************************************************************************
 //after receiving the RF data, it activates the telemetry of the monitored voltage RX vcc by means of a flashing LED indication ******************************************
 //************************************************************************************************************************************************************************
-unsigned long ledTime = 0;
 int ledState;
+unsigned long ledTime = 0;
 
 void RFon_indication()
 {
@@ -224,4 +247,25 @@ void RFoff_indication()
     digitalWrite(led, ledState);
   }
 }
-  
+
+//************************************************************************************************************************************************************************
+//specific flashing of the TX transmitter battery voltage drop LED *******************************************************************************************************
+//************************************************************************************************************************************************************************
+void TXvcc_indication()
+{
+  if (millis() >= ledTime + 200) //1000 (1second)
+  {
+    ledTime = millis();
+    
+    if (ledState)
+    {
+      ledState = LOW;
+    }
+    else
+    {
+      ledState = HIGH;
+    }   
+    digitalWrite(led, ledState);
+  }
+}
+    
