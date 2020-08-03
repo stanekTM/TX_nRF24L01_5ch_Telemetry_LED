@@ -191,7 +191,7 @@ float TXvcc = 0;
 void battery_voltage()
 {
   //---------------------------- vcc ------------ monitored voltage
-  TXvcc = analogRead(inTXvcc) * (4.2 / 1023.0) <= 3.3;
+  TXvcc = analogRead(inTXvcc) * (4.5 / 1023.0) <= 3.3;
   
   if (TXvcc)
   {
