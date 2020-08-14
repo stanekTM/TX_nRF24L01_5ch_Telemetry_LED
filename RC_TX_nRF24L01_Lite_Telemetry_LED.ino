@@ -8,23 +8,23 @@
 //pin            6
 //pin            7
 //pin            8
-//pin            A7
+//pin            A6
 
 //pins for driver
 #define driv1    A0
 #define driv2    A1
-#define driv3    A3
-#define driv4    A6
-#define driv5    2
-#define driv6    3
+#define driv3    A2
+#define driv4    A3
+#define driv5    3
+#define driv6    4
 #define driv7    A4
 #define driv8    A5
 
-//TX RX vcc, RF on/off TX LED
-#define led      4
+//LED RX, TX battery and RF on/off
+#define led      2
 
-//input TX vcc
-#define inTXvcc  A2
+//input TX battery
+#define inTxBat  A7
 
 //pins for nRF24L01
 #define CE       9
@@ -60,7 +60,7 @@ tx_data rc_data; //create a variable with the above structure
 //************************************************************************************************************************************************************************
 struct ackPayload
 {
-  float RXvcc; //telemetry RX vcc
+  float RxBat;
 };
 ackPayload payload;
 
@@ -110,8 +110,8 @@ void setup()
 { 
   Serial.begin(9600);
 
-  pinMode(led, OUTPUT); //TX RX vcc, RF on/off TX LED
-  pinMode(inTXvcc, INPUT); //input TX vcc
+  pinMode(led, OUTPUT); //LED RX, TX battery and RF on/off
+  pinMode(inTxBat, INPUT); //input TX battery
 
   resetData(); //reset each channel value
   
@@ -184,25 +184,25 @@ void send_and_receive_data()
 }
 
 //************************************************************************************************************************************************************************
-//voltage detection of the TX transmitter's supply battery ***************************************************************************************************************
+//input TX battery with undervoltage detection ***************************************************************************************************************************
 //************************************************************************************************************************************************************************
-float TXvcc = 0;
+float TxBat = 0;
 
 void battery_voltage()
 {
-  //---------------------------- vcc ------------ monitored voltage
-  TXvcc = analogRead(inTXvcc) * (4.5 / 1023.0) <= 3.3;
+  //---------------------------- TX battery ----- monitored voltage
+  TxBat = analogRead(inTxBat) * (4.5 / 1023.0) <= 3.3;
   
-  if (TXvcc)
+  if (TxBat)
   {
-    TXvcc_indication();
+    TxBat_indication();
   }
 
-//  Serial.println(TXvcc); //print value ​​on a serial monitor 
+//  Serial.println(TxBat); //print value ​​on a serial monitor 
 }
 
 //************************************************************************************************************************************************************************
-//after receiving the RF data, it activates the telemetry of the monitored voltage RX vcc by means of a flashing LED indication ******************************************
+//after receiving the RF data, it activates of the monitored RX battery by means of a flashing LED indication ************************************************************
 //************************************************************************************************************************************************************************
 int ledState;
 unsigned long ledTime = 0;
@@ -213,7 +213,7 @@ void RFon_indication()
   {
     ledTime = millis();
     
-    if (ledState >= !payload.RXvcc + HIGH)
+    if (ledState >= !payload.RxBat + HIGH)
     {
       ledState = LOW;
     }
@@ -223,7 +223,7 @@ void RFon_indication()
     }   
     digitalWrite(led, ledState);
       
-//    digitalWrite(led, payload.RXvcc); //LED indication without flashing
+//    digitalWrite(led, payload.RxBat); //LED indication without flashing
   }
 }
 
@@ -251,7 +251,7 @@ void RFoff_indication()
 //************************************************************************************************************************************************************************
 //specific flashing of the TX transmitter battery voltage drop LED *******************************************************************************************************
 //************************************************************************************************************************************************************************
-void TXvcc_indication()
+void TxBat_indication()
 {
   if (millis() >= ledTime + 200) //1000 (1second)
   {
