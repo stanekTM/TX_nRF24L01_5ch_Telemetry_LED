@@ -42,18 +42,18 @@ const byte addresses[][6] = {"tx001", "rx002"};
 //************************************************************************************************************************************************************************
 //this structure defines the sent data in bytes (structure size max. 32 bytes) *******************************************************************************************
 //************************************************************************************************************************************************************************
-struct tx_data
+struct packet
 {
-  byte ch1;
-  byte ch2;
-  byte ch3;
-  byte ch4;
-  byte ch5;
-  byte ch6;
-  byte ch7;
-  byte ch8;
+  unsigned int ch1;
+  unsigned int ch2;
+  unsigned int ch3;
+  unsigned int ch4;
+  unsigned int ch5;
+  unsigned int ch6;
+  unsigned int ch7;
+  unsigned int ch8;
 };
-tx_data rc_data; //create a variable with the above structure
+packet rc_data; //create a variable with the above structure
 
 //************************************************************************************************************************************************************************
 //this struct defines data, which are embedded inside the ACK payload ****************************************************************************************************
@@ -90,17 +90,17 @@ void inputDriver()
  * Reversed:  rc_data.ch1 = map(analogRead(A0), 0, 1023, 255, 0);
  * Convert the analog read value from 0 to 1023 into a byte value from 0 to 255
  */ 
-  rc_data.ch1 = map(analogRead(driv1),  0, 1023, 0, 255);
+  rc_data.ch1 = map(analogRead(driv1),  0, 1023, 0, 255); //linear
   rc_data.ch2 = map(analogRead(driv2),  0, 1023, 0, 255);
   rc_data.ch3 = map(analogRead(driv3),  0, 1023, 0, 255);
   rc_data.ch4 = map(analogRead(driv4),  0, 1023, 0, 255);
-  rc_data.ch5 =    digitalRead(driv5);
+  rc_data.ch5 =    digitalRead(driv5);                    //logic
   rc_data.ch6 =    digitalRead(driv6);
 //steering, throttle --------------------------------------------------------------------------- 
   rc_data.ch7 = map(analogRead(driv7), 333, 690, 0, 255); //steering (333, 690) Hitec Ranger AM
   rc_data.ch8 = map(analogRead(driv8), 333, 690, 0, 255); //throttle (333, 690) Hitec Ranger AM 
 
-//  Serial.println(rc_data.ch8); //print value ​​on a serial monitor  
+//  Serial.println(rc_data.ch1); //print value ​​on a serial monitor  
 }
 
 //************************************************************************************************************************************************************************
@@ -166,7 +166,7 @@ void receive_time()
 //************************************************************************************************************************************************************************
 void send_and_receive_data()
 {
-  if (radio.write(&rc_data, sizeof(tx_data)))   //"write" send all data from the structure and check if the transfer was successful
+  if (radio.write(&rc_data, sizeof(packet)))   //"write" send all data from the structure and check if the transfer was successful
                                                 //"rc_data" pointer to the data to be sent
                                                 //"tx_data" number of bytes to be sent
     {                                                                                      
