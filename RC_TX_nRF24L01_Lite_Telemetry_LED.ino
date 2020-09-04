@@ -4,21 +4,21 @@
 #include <SPI.h>      //https://github.com/arduino/ArduinoCore-avr/tree/master/libraries/SPI 
 
 //free pins
+//pin            4
 //pin            5
 //pin            6
 //pin            7
 //pin            8
+//pin            A2
+//pin            A3
 //pin            A6
 
 //pins for driver
 #define driv1    A0
 #define driv2    A1
-#define driv3    A2
-#define driv4    A3
-#define driv5    3
-#define driv6    4
-#define driv7    A4
-#define driv8    A5
+#define driv3    3
+#define driv4    A4
+#define driv5    A5
 
 //LED RX, TX battery and RF on/off
 #define led      2
@@ -47,11 +47,8 @@ struct packet
   unsigned int ch1;
   unsigned int ch2;
   unsigned int ch3;
-  unsigned int ch4;
-  unsigned int ch5;
-  unsigned int ch6;
-  unsigned int ch7;
-  unsigned int ch8;
+  unsigned int steering;
+  unsigned int throttle;
 };
 packet rc_data; //create a variable with the above structure
 
@@ -69,14 +66,11 @@ ackPayload payload;
 //************************************************************************************************************************************************************************
 void resetData()
 {
-  rc_data.ch1 = 1500;     
-  rc_data.ch2 = 1500;
-  rc_data.ch3 = 1500;
-  rc_data.ch4 = 1500;
-  rc_data.ch5 = 0;
-  rc_data.ch6 = 0;
-  rc_data.ch7 = 1500;
-  rc_data.ch8 = 1500;
+  rc_data.ch1      = 1500;     
+  rc_data.ch2      = 1500;
+  rc_data.ch3      = 0;
+  rc_data.steering = 1500;
+  rc_data.throttle = 1500;
 }
 
 //************************************************************************************************************************************************************************
@@ -90,17 +84,14 @@ void inputDriver()
  * Reversed:  rc_data.ch1 = map(analogRead(A0), 0, 1023, 2000, 1000);
  * Convert the analog read value from 0 to 1023 into a byte value from 1000us to 2000us
  */ 
-  rc_data.ch1 = map(analogRead(driv1),  0, 1023, 1000, 2000); //linear
-  rc_data.ch2 = map(analogRead(driv2),  0, 1023, 1000, 2000);
-  rc_data.ch3 = map(analogRead(driv3),  0, 1023, 1000, 2000);
-  rc_data.ch4 = map(analogRead(driv4),  0, 1023, 1000, 2000);
-  rc_data.ch5 =    digitalRead(driv5);                        //logic
-  rc_data.ch6 =    digitalRead(driv6);
-//steering, throttle --------------------------------------------------------------------------- 
-  rc_data.ch7 = map(analogRead(driv7), 333, 690, 1000, 2000); //steering (333, 690) Hitec Ranger AM
-  rc_data.ch8 = map(analogRead(driv8), 333, 690, 1000, 2000); //throttle (333, 690) Hitec Ranger AM
+  rc_data.ch1      = map(analogRead(driv1),  0, 1023, 1000, 2000); //linear
+  rc_data.ch2      = map(analogRead(driv2),  0, 1023, 1000, 2000);
+  rc_data.ch3      =    digitalRead(driv3);                        //logic
+  
+  rc_data.steering = map(analogRead(driv4), 333, 690, 1000, 2000); //(333, 690) Hitec Ranger AM
+  rc_data.throttle = map(analogRead(driv5), 333, 690, 1000, 2000); //(333, 690) Hitec Ranger AM
 
-//  Serial.println(rc_data.ch7); //print value ​​on a serial monitor  
+//  Serial.println(rc_data.throttle); //print value ​​on a serial monitor  
 }
 
 //************************************************************************************************************************************************************************
@@ -112,6 +103,7 @@ void setup()
 
   pinMode(led, OUTPUT); //LED RX, TX battery and RF on/off
   pinMode(inTxBat, INPUT); //input TX battery
+  pinMode(driv3, INPUT_PULLUP); //input switch
 
   resetData(); //reset each channel value
   
@@ -168,7 +160,7 @@ void send_and_receive_data()
 {
   if (radio.write(&rc_data, sizeof(packet)))    //"write" send all data from the structure and check if the transfer was successful
                                                 //"rc_data" pointer to the data to be sent
-                                                //"tx_data" number of bytes to be sent
+                                                //"packet" number of bytes to be sent
     {                                                                                      
     if (radio.isAckPayloadAvailable())          //determine if an ack payload was received in the most recent call to "write". The regular "available" can also be used
     {
