@@ -40,15 +40,15 @@ RF24 radio(CE, CSN); //setup CE and CSN pins
 const byte addresses[][6] = {"tx001", "rx002"};
 
 //************************************************************************************************************************************************************************
-//this structure defines the sent data in bytes (structure size max. 32 bytes) *******************************************************************************************
+//this structure defines the sent data in bytes (structure size max. 32 bytes), values ​​(min = 1000us, mid = 1500us, max = 2000us) ****************************************
 //************************************************************************************************************************************************************************
 struct packet
 {
-  unsigned int ch1;
-  unsigned int ch2;
-  unsigned int ch3;
-  unsigned int steering;
-  unsigned int throttle;
+  unsigned int ch1      = 1500;
+  unsigned int ch2      = 1500;
+  unsigned int ch3      = 0;
+  unsigned int steering = 1500;
+  unsigned int throttle = 1500;
 };
 packet rc_data; //create a variable with the above structure
 
@@ -60,18 +60,6 @@ struct ackPayload
   float RxBat;
 };
 ackPayload payload;
-
-//************************************************************************************************************************************************************************
-//reset values ​​(min = 1000us, mid = 1500us, max = 2000us) ****************************************************************************************************************
-//************************************************************************************************************************************************************************
-void resetData()
-{
-  rc_data.ch1      = 1500;     
-  rc_data.ch2      = 1500;
-  rc_data.ch3      = 0;
-  rc_data.steering = 1500;
-  rc_data.throttle = 1500;
-}
 
 //************************************************************************************************************************************************************************
 //inputs of control joysticks and switches *******************************************************************************************************************************
@@ -104,8 +92,6 @@ void setup()
   pinMode(led, OUTPUT); //LED RX, TX battery and RF on/off
   pinMode(inTxBat, INPUT); //input TX battery
   pinMode(driv3, INPUT_PULLUP); //input switch
-
-  resetData(); //reset each channel value
   
   //define the radio communication
   radio.begin();
