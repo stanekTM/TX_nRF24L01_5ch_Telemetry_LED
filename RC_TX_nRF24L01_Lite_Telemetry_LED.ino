@@ -64,6 +64,9 @@ ackPayload payload;
 //************************************************************************************************************************************************************************
 //inputs of control joysticks and switches *******************************************************************************************************************************
 //************************************************************************************************************************************************************************
+int valmin = 342; //joysticks center Hitec Ranger 2AM
+int valmax = 1023 - valmin;
+
 void inputDriver()
 {
 /*
@@ -72,8 +75,6 @@ void inputDriver()
  * Reversed:  rc_data.ch1 = map(analogRead(A0), 0, 1023, 2000, 1000);
  * Convert the analog read value from 0 to 1023 into a byte value from 1000us to 2000us
  */ 
-int valmin = 333; //Hitec Ranger AM
-int valmax = 1023 - valmin;
 
   rc_data.steering = map(analogRead(driv1), valmin, valmax, 1000, 2000);
   rc_data.steering = constrain(rc_data.steering, 1000, 2000);
