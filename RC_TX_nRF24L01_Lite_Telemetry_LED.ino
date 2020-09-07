@@ -64,7 +64,7 @@ ackPayload payload;
 //************************************************************************************************************************************************************************
 //inputs of control joysticks and switches *******************************************************************************************************************************
 //************************************************************************************************************************************************************************
-int valmin = 342; //joysticks center Hitec Ranger 2AM
+int valmin = 342; //joystick path compensation for 1000us to 2000us Hitec Ranger 2AM
 int valmax = 1023 - valmin;
 
 void inputDriver()
@@ -82,11 +82,11 @@ void inputDriver()
   rc_data.throttle = map(analogRead(driv2), valmin, valmax, 1000, 2000);
   rc_data.throttle = constrain(rc_data.throttle, 1000, 2000);
  
-  rc_data.ch3 = map(analogRead(driv3),  0, 1023, 1000, 2000);
+  rc_data.ch3 = map(analogRead(driv3), 0, 1023, 1000, 2000);
   rc_data.ch3 = constrain(rc_data.ch3, 1000, 2000); 
-  rc_data.ch4 = map(analogRead(driv4),  0, 1023, 1000, 2000);
+  rc_data.ch4 = map(analogRead(driv4), 0, 1023, 1000, 2000);
   rc_data.ch4 = constrain(rc_data.ch4, 1000, 2000);
-  rc_data.ch5 = map(analogRead(driv5),  0, 1023, 1000, 2000);
+  rc_data.ch5 = map(analogRead(driv5), 0, 1023, 1000, 2000);
   rc_data.ch5 = constrain(rc_data.ch5, 1000, 2000);
 
 //  Serial.println(rc_data.throttle); //print value ​​on a serial monitor  
