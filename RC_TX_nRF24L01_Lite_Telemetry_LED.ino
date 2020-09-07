@@ -4,21 +4,21 @@
 #include <SPI.h>      //https://github.com/arduino/ArduinoCore-avr/tree/master/libraries/SPI 
 
 //free pins
+//pin            3
 //pin            4
 //pin            5
 //pin            6
 //pin            7
 //pin            8
-//pin            A2
-//pin            A3
+//pin            A5
 //pin            A6
 
 //pins for driver
 #define driv1    A0
 #define driv2    A1
-#define driv3    3
-#define driv4    A4
-#define driv5    A5
+#define driv3    A2
+#define driv4    A3
+#define driv5    A4
 
 //LED RX, TX battery and RF on/off
 #define led      2
@@ -44,11 +44,11 @@ const byte addresses[][6] = {"tx001", "rx002"};
 //************************************************************************************************************************************************************************
 struct packet
 {
-  unsigned int ch1      = 1500;
-  unsigned int ch2      = 1500;
-  unsigned int ch3      = 0;
   unsigned int steering = 1500;
   unsigned int throttle = 1500;
+  unsigned int ch3      = 1500;
+  unsigned int ch4      = 1500;
+  unsigned int ch5      = 1500;
 };
 packet rc_data; //create a variable with the above structure
 
@@ -72,12 +72,21 @@ void inputDriver()
  * Reversed:  rc_data.ch1 = map(analogRead(A0), 0, 1023, 2000, 1000);
  * Convert the analog read value from 0 to 1023 into a byte value from 1000us to 2000us
  */ 
-  rc_data.ch1      = map(analogRead(driv1),  0, 1023, 1000, 2000); //linear
-  rc_data.ch2      = map(analogRead(driv2),  0, 1023, 1000, 2000);
-  rc_data.ch3      =    digitalRead(driv3);                        //logic
+int valmin = 333; //Hitec Ranger AM
+int valmax = 1023 - valmin;
+
+  rc_data.steering = map(analogRead(driv1), valmin, valmax, 1000, 2000);
+  rc_data.steering = constrain(rc_data.steering, 1000, 2000);
   
-  rc_data.steering = map(analogRead(driv4), 333, 690, 1000, 2000); //(333, 690) Hitec Ranger AM
-  rc_data.throttle = map(analogRead(driv5), 333, 690, 1000, 2000); //(333, 690) Hitec Ranger AM
+  rc_data.throttle = map(analogRead(driv2), valmin, valmax, 1000, 2000);
+  rc_data.throttle = constrain(rc_data.throttle, 1000, 2000);
+ 
+  rc_data.ch3 = map(analogRead(driv3),  0, 1023, 1000, 2000);
+  rc_data.ch3 = constrain(rc_data.ch3, 1000, 2000); 
+  rc_data.ch4 = map(analogRead(driv4),  0, 1023, 1000, 2000);
+  rc_data.ch4 = constrain(rc_data.ch4, 1000, 2000);
+  rc_data.ch5 = map(analogRead(driv5),  0, 1023, 1000, 2000);
+  rc_data.ch5 = constrain(rc_data.ch5, 1000, 2000);
 
 //  Serial.println(rc_data.throttle); //print value ​​on a serial monitor  
 }
@@ -91,7 +100,6 @@ void setup()
 
   pinMode(led, OUTPUT); //LED RX, TX battery and RF on/off
   pinMode(inTxBat, INPUT); //input TX battery
-  pinMode(driv3, INPUT_PULLUP); //input switch
   
   //define the radio communication
   radio.begin();
