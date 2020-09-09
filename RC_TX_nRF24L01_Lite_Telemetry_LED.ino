@@ -104,7 +104,6 @@ void setup()
   
   //define the radio communication
   radio.begin();
-  
   radio.setAutoAck(true);          //ensure autoACK is enabled (default true)
   radio.enableAckPayload();        //enable custom ack payloads on the acknowledge packets
   radio.enableDynamicPayloads();   //enable dynamically-sized payloads
@@ -163,61 +162,39 @@ void send_and_receive_data()
                                                 //"payload" pointer to a buffer where the data should be written
                                                 //"ackPayload" maximum number of bytes to read into the buffer
       lastReceiveTime = millis();               //at this moment we have received the data
-      RFon_indication();                                          
+      RxBat_indication();                                          
     }                              
   } 
 }
 
 //************************************************************************************************************************************************************************
-//input TX battery with undervoltage detection ***************************************************************************************************************************
+//TX battery input measurement with undervoltage detection **********************************************************************************************************************************
 //************************************************************************************************************************************************************************
-float TxBat = 0;
+unsigned long ledTime = 0;
+int ledState, detect;
+float TxBat;
 
 void battery_voltage()
-{
-  //---------------------------- TX battery ----- monitored voltage
-  TxBat = analogRead(inTxBat) * (4.5 / 1023.0) <= 3.3;
-  
-  if (TxBat)
+{ //---------------------------- TX battery --
+  TxBat = analogRead(inTxBat) * (4.2 / 1023);
+
+  //--------------- monitored voltage
+  detect = TxBat <= 3.3;
+
+  if (detect)
   {
     TxBat_indication();
   }
-
+  
 //  Serial.println(TxBat); //print value ​​on a serial monitor 
 }
 
 //************************************************************************************************************************************************************************
-//after receiving the RF data, it activates of the monitored RX battery by means of a flashing LED indication ************************************************************
+//specific flashing of the TX transmitter battery voltage drop LED *******************************************************************************************************
 //************************************************************************************************************************************************************************
-int ledState;
-unsigned long ledTime = 0;
-
-void RFon_indication()
+void TxBat_indication()
 {
-  if (millis() >= ledTime + 500) //1000 (1second)
-  {
-    ledTime = millis();
-    
-    if (ledState >= !payload.RxBat + HIGH)
-    {
-      ledState = LOW;
-    }
-    else
-    {
-      ledState = HIGH;
-    }   
-    digitalWrite(led, ledState);
-      
-//    digitalWrite(led, payload.RxBat); //LED indication without flashing
-  }
-}
-
-//************************************************************************************************************************************************************************
-//when TX is switched on and RX is switched off, or after the loss of RF data, the LED activates flashing ****************************************************************
-//************************************************************************************************************************************************************************
-void RFoff_indication()
-{
-  if (millis() >= ledTime + 100) //1000 (1second)
+  if (millis() >= ledTime + 200) //1000 (1second)
   {
     ledTime = millis();
     
@@ -234,11 +211,34 @@ void RFoff_indication()
 }
 
 //************************************************************************************************************************************************************************
-//specific flashing of the TX transmitter battery voltage drop LED *******************************************************************************************************
+//after receiving RF data, the monitored RX battery is activated. Undervoltage detection by flashing LED or batteries OK LED status **************************************
 //************************************************************************************************************************************************************************
-void TxBat_indication()
+void RxBat_indication()
+{ //----------------------- monitored voltage
+  detect = payload.RxBat <= 3.3;
+  
+  if (millis() >= ledTime + 500) //1000 (1second)
+  {
+    ledTime = millis();
+    
+    if (ledState >= !detect + HIGH)
+    {
+      ledState = LOW;
+    }
+    else
+    {
+      ledState = HIGH;
+    }   
+    digitalWrite(led, ledState);
+  }
+}
+
+//************************************************************************************************************************************************************************
+//when TX is switched on and RX is switched off, or after the loss of RF data, the LED activates flashing ****************************************************************
+//************************************************************************************************************************************************************************
+void RFoff_indication()
 {
-  if (millis() >= ledTime + 200) //1000 (1second)
+  if (millis() >= ledTime + 100) //1000 (1second)
   {
     ledTime = millis();
     
