@@ -13,12 +13,12 @@
 //pin            A5
 //pin            A6
 
-//pins for driver
-#define driv1    A0
-#define driv2    A1
-#define driv3    A2
-#define driv4    A3
-#define driv5    A4
+//pins for joysticks and switches
+#define joy1    A0
+#define joy2    A1
+#define joy3    A2
+#define joy4    A3
+#define joy5    A4
 
 //LED RX, TX battery and RF on/off
 #define led      2
@@ -76,17 +76,17 @@ void inputDriver()
  * Convert the analog read value from 0 to 1023 into a byte value from 1000us to 2000us
  */ 
 
-  rc_data.steering = map(analogRead(driv1), valmin, valmax, 1000, 2000);
+  rc_data.steering = map(analogRead(joy1), valmin, valmax, 1000, 2000);
   rc_data.steering = constrain(rc_data.steering, 1000, 2000);
   
-  rc_data.throttle = map(analogRead(driv2), valmin, valmax, 1000, 2000);
+  rc_data.throttle = map(analogRead(joy2), valmin, valmax, 1000, 2000);
   rc_data.throttle = constrain(rc_data.throttle, 1000, 2000);
  
-  rc_data.ch3 = map(analogRead(driv3), 0, 1023, 1000, 2000);
+  rc_data.ch3 = map(analogRead(joy3), 0, 1023, 1000, 2000);
   rc_data.ch3 = constrain(rc_data.ch3, 1000, 2000); 
-  rc_data.ch4 = map(analogRead(driv4), 0, 1023, 1000, 2000);
+  rc_data.ch4 = map(analogRead(joy4), 0, 1023, 1000, 2000);
   rc_data.ch4 = constrain(rc_data.ch4, 1000, 2000);
-  rc_data.ch5 = map(analogRead(driv5), 0, 1023, 1000, 2000);
+  rc_data.ch5 = map(analogRead(joy5), 0, 1023, 1000, 2000);
   rc_data.ch5 = constrain(rc_data.ch5, 1000, 2000);
 
 //  Serial.println(rc_data.throttle); //print value ​​on a serial monitor  
