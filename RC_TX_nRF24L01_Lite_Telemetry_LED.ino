@@ -67,7 +67,7 @@ ackPayload payload;
 int valmin = 342; //joystick path compensation for 1000us to 2000us Hitec Ranger 2AM
 int valmax = 1023 - valmin;
 
-void inputDriver()
+void inputJoystick()
 {
 /*
  * Read all analog inputs and map them to one byte value
@@ -127,7 +127,7 @@ void loop()
   receive_time();
   send_and_receive_data();
                                                             
-  inputDriver();
+  inputJoystick();
 
   battery_voltage();
 
