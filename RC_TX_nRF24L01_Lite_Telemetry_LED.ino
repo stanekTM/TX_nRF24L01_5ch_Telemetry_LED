@@ -99,8 +99,8 @@ void setup()
 { 
   Serial.begin(9600);
 
-  pinMode(led, OUTPUT); //LED RX, TX battery and RF on/off
-  pinMode(inTxBat, INPUT); //input TX battery
+  pinMode(led, OUTPUT);
+  pinMode(inTxBat, INPUT);
   
   //define the radio communication
   radio.begin();
@@ -134,7 +134,7 @@ void loop()
 } //end program loop
 
 //************************************************************************************************************************************************************************
-//after losing RF data or turning off the RX, gain time and the LED activates flashing ***********************************************************************************
+//after losing RF data or turning off the RX, gain time and the LED flashing *********************************************************************************************
 //************************************************************************************************************************************************************************
 unsigned long lastReceiveTime = 0;
 
