@@ -136,11 +136,11 @@ void loop()
 //************************************************************************************************************************************************************************
 //after losing RF data or turning off the RX, gain time and the LED flashing *********************************************************************************************
 //************************************************************************************************************************************************************************
-unsigned long lastReceiveTime = 0;
+unsigned long lastRxTime = 0;
 
 void receive_time()
 { //check whether we keep receving data, or we have a connection between the two modules
-  if(millis() >= lastReceiveTime + 1000) //1000 (1second)
+  if(millis() >= lastRxTime + 1000) //1000 (1second)
   {
     RFoff_indication();
   }
@@ -160,7 +160,7 @@ void send_and_receive_data()
       radio.read(&payload, sizeof(ackPayload)); //"read" retrieve the ack payload
                                                 //"payload" pointer to a buffer where the data should be written
                                                 //"ackPayload" maximum number of bytes to read into the buffer
-      lastReceiveTime = millis();               //at this moment we have received the data
+      lastRxTime = millis();               //at this moment we have received the data
       RxBat_indication();                                          
     }                              
   } 
