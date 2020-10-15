@@ -24,7 +24,7 @@
 #define led      2
 
 //input TX battery
-#define inTxBat  A7
+#define inTXbatt A7
 
 //pins for nRF24L01
 #define CE       9
@@ -57,7 +57,7 @@ packet rc_data; //create a variable with the above structure
 //************************************************************************************************************************************************************************
 struct ackPayload
 {
-  float RxBat;
+  float RXbatt;
 };
 ackPayload payload;
 
@@ -97,10 +97,10 @@ void inputJoystick()
 //************************************************************************************************************************************************************************
 void setup()
 { 
-  Serial.begin(9600);
+//  Serial.begin(9600);
 
   pinMode(led, OUTPUT);
-  pinMode(inTxBat, INPUT);
+  pinMode(inTXbatt, INPUT);
   
   //define the radio communication
   radio.begin();
@@ -161,7 +161,7 @@ void send_and_receive_data()
                                                 //"payload" pointer to a buffer where the data should be written
                                                 //"ackPayload" maximum number of bytes to read into the buffer
       lastRxTime = millis();               //at this moment we have received the data
-      RxBat_indication();                                          
+      RXbatt_indication();                                          
     }                              
   } 
 }
@@ -171,25 +171,26 @@ void send_and_receive_data()
 //************************************************************************************************************************************************************************
 unsigned long ledTime = 0;
 int ledState, detect;
-float TxBat;
+float TXbatt;
 
 void battery_voltage()
-{ //---------------------------- TX battery --
-  TxBat = analogRead(inTxBat) * (4.2 / 1023);
+{ 
+  //------------------------------ TX battery --
+  TXbatt = analogRead(inTXbatt) * (4.2 / 1023);
 
   //--------------- monitored voltage
-  detect = TxBat <= 3.3;
+  detect = TXbatt <= 3.3;
 
   if (detect)
   {
-    TxBat_indication();
+    TXbatt_indication();
   }
   
-//  Serial.println(TxBat); //print value ​​on a serial monitor 
+//  Serial.println(TXbatt); //print value ​​on a serial monitor 
 }
 
 //-----------------------------------------------------------
-void TxBat_indication()
+void TXbatt_indication()
 {
   if (millis() >= ledTime + 200) //1000 (1second)
   {
@@ -211,9 +212,10 @@ void TxBat_indication()
 //after receiving RF data, the monitored RX battery is activated ********************************************************************************************************* 
 //RX battery voltage 1S LiPo (4.2V) < 3.3V = LEDs TX, RX flash at a interval of 500ms. Battery OK = LEDs TX, RX is lit ***************************************************
 //************************************************************************************************************************************************************************
-void RxBat_indication()
-{ //----------------------- monitored voltage
-  detect = payload.RxBat <= 3.3;
+void RXbatt_indication()
+{ 
+  //------------------------ monitored voltage
+  detect = payload.RXbatt <= 3.3;
   
   if (millis() >= ledTime + 500) //1000 (1second)
   {
