@@ -139,7 +139,7 @@ void loop()
 unsigned long lastRxTime = 0;
 
 void receive_time()
-{ //check whether we keep receving data, or we have a connection between the two modules
+{
   if(millis() >= lastRxTime + 1000) //1000 (1second)
   {
     RFoff_indication();
@@ -151,16 +151,13 @@ void receive_time()
 //************************************************************************************************************************************************************************
 void send_and_receive_data()
 {
-  if (radio.write(&rc_data, sizeof(packet)))    //"write" send all data from the structure and check if the transfer was successful
-                                                //"rc_data" pointer to the data to be sent
-                                                //"packet" number of bytes to be sent
-    {                                                                                      
-    if (radio.isAckPayloadAvailable())          //determine if an ack payload was received in the most recent call to "write". The regular "available" can also be used
+  if (radio.write(&rc_data, sizeof(packet)))
+  {
+    if (radio.isAckPayloadAvailable())
     {
-      radio.read(&payload, sizeof(ackPayload)); //"read" retrieve the ack payload
-                                                //"payload" pointer to a buffer where the data should be written
-                                                //"ackPayload" maximum number of bytes to read into the buffer
-      lastRxTime = millis();               //at this moment we have received the data
+      radio.read(&payload, sizeof(ackPayload));
+                                            
+      lastRxTime = millis(); //at this moment we have received the data
       RXbatt_indication();                                          
     }                              
   } 
