@@ -1,7 +1,7 @@
 
+#include <SPI.h>      //Arduino standard library
 #include <RF24.h>     //https://github.com/nRF24/RF24
-#include <nRF24L01.h> //https://github.com/nRF24/RF24
-#include <SPI.h>      //https://github.com/arduino/ArduinoCore-avr/tree/master/libraries/SPI 
+#include <nRF24L01.h>
 
 //free pins
 //pin            3
@@ -14,11 +14,11 @@
 //pin            A6
 
 //pins for joysticks and switches
-#define joy1    A0
-#define joy2    A1
-#define joy3    A2
-#define joy4    A3
-#define joy5    A4
+#define joy1     A0
+#define joy2     A1
+#define joy3     A2
+#define joy4     A3
+#define joy5     A4
 
 //LED RX, TX battery and RF on/off
 #define led      2
@@ -175,7 +175,7 @@ void battery_voltage()
   //------------------------------ TX battery --
   TXbatt = analogRead(inTXbatt) * (4.2 / 1023);
 
-  //--------------- monitored voltage
+  //---------------- monitored voltage
   detect = TXbatt <= 3.3;
 
   if (detect)
