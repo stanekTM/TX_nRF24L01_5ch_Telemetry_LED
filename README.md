@@ -4,17 +4,17 @@ It contains the telemetry of the monitored RX voltage by means of a flashing LED
 
 This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo](https://github.com/stanekTM/RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo)
 
-### Function:
-## Calibration:
+## Function:
+### Calibration:
 * Hold calibration button (pin D4), switch transmitter TX on, still holding calibration button move all controls to extremes including auxilliary pots.
 * Center all controls and aux pots.
 * Release calibration button.
 * Do not switch transmitter TX off during calibration, the calibration values cant be saved if the set has been switched off!
 #
-## Servo reversing:
+### Servo reversing:
 * By holding joysticks over on power up (saved to eeprom).
 
-### Arduino pins:
+## Arduino pins:
 * A0 - joystick 1
 * A1 - joystick 2
 * A2 - potentiometer 3
@@ -31,12 +31,12 @@ nRF24L01:
 * D12 - MISO
 * D13 - SCK
 
-### Code:
+## Code:
 [RC_TX_nRF24L01_Telemetry_LED](https://github.com/stanekTM/RC_TX_nRF24L01_Telemetry_LED/blob/master/RC_TX_nRF24L01_Telemetry_LED/RC_TX_nRF24L01_Telemetry_LED.ino)
 
 [RC_TX_nRF24L01_Telemetry_LED_Calibration](https://github.com/stanekTM/RC_TX_nRF24L01_Telemetry_LED/blob/master/RC_TX_nRF24L01_Telemetry_LED_Calibration/RC_TX_nRF24L01_Telemetry_LED_Calibration.ino)
 
-### Used libraries:
+## Used libraries:
 * <SPI.h>  Arduino standard library
 * <RF24.h> https://github.com/nRF24/RF24
 #
