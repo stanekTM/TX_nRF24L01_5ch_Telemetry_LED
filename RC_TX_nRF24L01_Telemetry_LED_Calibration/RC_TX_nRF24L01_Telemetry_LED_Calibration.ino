@@ -1,6 +1,6 @@
 /*
  Calibration:
- hold calibration button (pin D4), switch transmitter TX on, 
+ Hold calibration button (pin D4), switch transmitter TX on, 
  still holding calibration button move all controls to extremes including auxilliary pots.
  Center all controls and aux pots.
  Release calibration button.
@@ -8,7 +8,7 @@
  the calibration values cant be saved if the set has been switched off!
 
  Servo reversing:
- by holding joysticks over on power up (saved to eeprom).
+ By holding joysticks over on power up (saved to eeprom).
 */
 
 // If you use this software in whole or in part please acknowledge its source - Phil_G on most forums, 
