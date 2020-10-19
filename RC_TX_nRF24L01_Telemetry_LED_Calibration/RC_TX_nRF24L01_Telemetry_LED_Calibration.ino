@@ -5,57 +5,58 @@
 #include <nRF24L01.h>
 
 
-#define servoCenter 1500 // Servo center value (us)
-#define servoMin    1000 // Min ppm output to be mapped (us)
-#define servoMax    2000 // Max ppm output to be mapped (us)
+#define servoMid 1500 // Servo center value (us)
+#define servoMin 1000 // Min ppm output to be mapped (us)
+#define servoMax 2000 // Max ppm output to be mapped (us)
 
 //free pins
-//pin             3
-//pin             5
-//pin             6
-//pin             7
-//pin             8
-//pin             A4 
-//pin             A5
-//pin             A6 
+//pin            3
+//pin            5
+//pin            6
+//pin            7
+//pin            8
+//pin            A4 
+//pin            A5
+//pin            A6 
 
-//pins for joysticks and switches
-//joystick1       A0
-//joystick2       A1
-//joystick3       A2
-//joystick4       A3
+//pins for pots, joysticks
+//pot1           A0
+//pot2           A1
+//pot3           A2
+//pot4           A3
 
 //LED RX, TX battery and RF on/off
-#define led       2
+#define led      2
 
-#define selButton 4
+//input button for select calibrate
+#define button   4
 
 //input TX battery
-#define inTXbatt  A7
+#define inTXbatt A7
 
 //pins for nRF24L01
-#define CE        9
-#define CSN       10
+#define CE       9
+#define CSN      10
 
 //hardware SPI
-//----- MOSI      11 
-//----- MISO      12 
-//----- SCK       13 
+//----- MOSI     11 
+//----- MISO     12 
+//----- SCK      13 
 
 RF24 radio(CE, CSN); //setup CE and CSN pins
 
 const byte addresses[][6] = {"tx001", "rx002"};
 
 //************************************************************************************************************************************************************************
-//this structure defines the sent data in bytes (structure size max. 32 bytes), values ​​(servoMin = 1000us, servoCenter = 1500us, servoMax = 2000us) **********************
+//this structure defines the sent data in bytes (structure size max. 32 bytes), values ​​(servoMin = 1000us, servoMid = 1500us, servoMax = 2000us) *************************
 //************************************************************************************************************************************************************************
 struct packet
 {
-  unsigned int steering = servoCenter;
-  unsigned int throttle = servoCenter;
-  unsigned int ch3      = servoCenter;
-  unsigned int ch4      = servoCenter;
-  unsigned int ch5      = servoCenter;
+  unsigned int steering = servoMid;
+  unsigned int throttle = servoMid;
+  unsigned int ch3      = servoMid;
+  unsigned int ch4      = servoMid;
+  unsigned int ch5      = servoMid;
 };
 packet rc_data; //create a variable with the above structure
 
@@ -69,68 +70,68 @@ struct ackPayload
 ackPayload payload;
 
 //************************************************************************************************************************************************************************
-//inputs of control joysticks and switches *******************************************************************************************************************************
+//read pots, joysticks ***************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
-int raw, ch, calibrated = 1, stickcalHi[] = {0, 0, 0, 0}, stickcalLo[] = {1023, 1023, 1023, 1023}, stickcalMid[] = {512, 512, 512, 512};
+int raw, ch, calibrated = 1, pot_calib_min[] = {0, 0, 0, 0}, pot_calib_max[] = {1023, 1023, 1023, 1023}, pot_calib_mid[] = {512, 512, 512, 512};
 int ppm[] = {1500, 1500, 1500, 1500};
 int epa_p[] = {500, 500, 600, 600};
 int epa_n[] = {-500, -500, -600, - 600};
 
-void inputJoystick()
+void read_pots()
 {
   rc_data.steering = ppm[0]; //A0
   rc_data.throttle = ppm[1]; //A1
   rc_data.ch3      = ppm[2]; //A2
   rc_data.ch4      = ppm[3]; //A3
 
-  //read sticks steering A0
+  //read pot steering A0
   for (ch = 0; ch < 1; ch++)
   {
     raw = analogRead(ch);
-    if (raw > stickcalMid[ch])
-    ppm[ch] = map(raw, stickcalMid[ch], stickcalHi[ch], 0, epa_p[0]);
+    if (raw > pot_calib_mid[ch])
+    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[0]);
     else
-    ppm[ch] = map(raw, stickcalLo[ch], stickcalMid[ch], epa_n[0], 0);
-    ppm[ch] += servoCenter;
+    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[0], 0);
+    ppm[ch] += servoMid;
     ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
 //    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
 
-  //read sticks throttle A1
+  //read pot throttle A1
   for (ch = 1; ch < 2; ch++)
   {
     raw = analogRead(ch);
-    if (raw > stickcalMid[ch])
-    ppm[ch] = map(raw, stickcalMid[ch], stickcalHi[ch], 0, epa_p[1]);
+    if (raw > pot_calib_mid[ch])
+    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[1]);
     else
-    ppm[ch] = map(raw, stickcalLo[ch], stickcalMid[ch], epa_n[1], 0);
-    ppm[ch] += servoCenter;
+    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[1], 0);
+    ppm[ch] += servoMid;
     ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
 //    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
 
-  //read sticks ch3 A2
+  //read pot ch3 A2
   for (ch = 2; ch < 3; ch++)
   {
     raw = analogRead(ch);
-    if (raw > stickcalMid[ch])
-    ppm[ch] = map(raw, stickcalMid[ch], stickcalHi[ch], 0, epa_p[2]);
+    if (raw > pot_calib_mid[ch])
+    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[2]);
     else
-    ppm[ch] = map(raw, stickcalLo[ch], stickcalMid[ch], epa_n[2], 0);
-    ppm[ch] += servoCenter;
+    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[2], 0);
+    ppm[ch] += servoMid;
     ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
 //    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
 
-  //read sticks ch4 A3
+  //read pot ch4 A3
   for (ch = 3; ch < 4; ch++)
   {
     raw = analogRead(ch);
-    if (raw > stickcalMid[ch])
-    ppm[ch] = map(raw, stickcalMid[ch], stickcalHi[ch], 0, epa_p[3]);
+    if (raw > pot_calib_mid[ch])
+    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[3]);
     else
-    ppm[ch] = map(raw, stickcalLo[ch], stickcalMid[ch], epa_n[3], 0);
-    ppm[ch] += servoCenter;
+    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[3], 0);
+    ppm[ch] += servoMid;
     ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
 //    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
@@ -139,19 +140,19 @@ void inputJoystick()
 }
 
 //************************************************************************************************************************************************************************
-//calibrate joysticks ****************************************************************************************************************************************************
+//calibrate pots, joysticks **********************************************************************************************************************************************
 //************************************************************************************************************************************************************************
-void calibrate()
+void calibrate_pots()
 { 
-  while (digitalRead(selButton) == 0)
+  while (digitalRead(button) == 0)
   {
     calibrated = 0;
-    for (int stick = 0; stick < 4; ++stick)
+    for (int pot = 0; pot < 4; ++pot)
     {
-      raw = analogRead(stick);
-      if (raw > stickcalHi[stick]) stickcalHi[stick] = raw;
-      if (raw < stickcalLo[stick]) stickcalLo[stick] = raw;
-      stickcalMid[stick] = raw;  // save neutral sticks as button is released
+      raw = analogRead(pot);
+      if (raw > pot_calib_min[pot]) pot_calib_min[pot] = raw;
+      if (raw < pot_calib_max[pot]) pot_calib_max[pot] = raw;
+      pot_calib_mid[pot] = raw;  // save neutral pots, joysticks as button is released
     }
   }  //calibrate button released
 
@@ -159,17 +160,17 @@ void calibrate()
   {
     for (ch = 0; ch < 4; ch++)
     {
-      EEPROMWriteInt(ch * 6, stickcalLo[ch]);      // eeprom locations  0,  6, 12, 18  (decimal)
-      EEPROMWriteInt(ch * 6 + 2, stickcalMid[ch]); // eeprom locations  2,  8, 14, 20  (decimal)
-      EEPROMWriteInt(ch * 6 + 4, stickcalHi[ch]);  // eeprom locations  4, 10, 16, 22  (decimal)
+      EEPROMWriteInt(ch * 6,     pot_calib_max[ch]); // eeprom locations  0,  6, 12, 18 (decimal)
+      EEPROMWriteInt(ch * 6 + 2, pot_calib_mid[ch]); // eeprom locations  2,  8, 14, 20 (decimal)
+      EEPROMWriteInt(ch * 6 + 4, pot_calib_min[ch]); // eeprom locations  4, 10, 16, 22 (decimal)
     }
     calibrated = 1;
     }
     for (ch = 0; ch < 4; ch++)
     {
-      stickcalLo[ch]  = EEPROMReadInt(ch * 6);       // eeprom locations  0,  6, 12, 18  (decimal)
-      stickcalMid[ch] = EEPROMReadInt(ch * 6 + 2);   // eeprom locations  2,  8, 14, 20  (decimal)
-      stickcalHi[ch]  = EEPROMReadInt(ch * 6 + 4);   // eeprom locations  4, 10, 16, 22  (decimal)
+      pot_calib_max[ch] = EEPROMReadInt(ch * 6);       // eeprom locations  0,  6, 12, 18 (decimal)
+      pot_calib_mid[ch] = EEPROMReadInt(ch * 6 + 2);   // eeprom locations  2,  8, 14, 20 (decimal)
+      pot_calib_min[ch] = EEPROMReadInt(ch * 6 + 4);   // eeprom locations  4, 10, 16, 22 (decimal)
 //      reverse[ch] = EEPROM.read(ch + 24) & 1;        // eeprom locations 24, 25, 26, 27 (decimal)
 //      reverse[3] = 0;                                // no throttle reverse for safety
     }
@@ -203,11 +204,11 @@ void setup()
 { 
 //  Serial.begin(9600);
 
-  calibrate();
+  calibrate_pots();
 
   pinMode(led, OUTPUT);
   pinMode(inTXbatt, INPUT);
-  pinMode(selButton, INPUT_PULLUP);
+  pinMode(button, INPUT_PULLUP);
   
   //define the radio communication
   radio.begin();
@@ -234,7 +235,7 @@ void loop()
   receive_time();
   send_and_receive_data(); 
                                                             
-  inputJoystick();
+  read_pots();
   
   battery_voltage();
 
