@@ -1,4 +1,22 @@
+/*
+ Calibration:
+ hold calibration button (pin D4), switch transmitter TX on, 
+ still holding calibration button move all controls to extremes including auxilliary pots.
+ Center all controls and aux pots.
+ Release calibration button.
+ Do not switch transmitter TX off during calibration, 
+ the calibration values cant be saved if the set has been switched off!
 
+ Servo reversing:
+ by holding joysticks over on power up (saved to eeprom).
+*/
+
+// If you use this software in whole or in part please acknowledge its source - Phil_G on most forums, 
+// philg@talk21.com  http://www.singlechannel.co.uk
+
+//************************************************************************************************************************************************************************
+//************************************************************************************************************************************************************************
+//************************************************************************************************************************************************************************
 #include <SPI.h>      // Arduino standard library
 #include <EEPROM.h>   // Arduino standard library
 #include <RF24.h>     // https://github.com/nRF24/RF24
@@ -28,7 +46,7 @@
 //LED RX, TX battery and RF on/off
 #define led      2
 
-//input button for select calibrate
+//calibration button
 #define button   4
 
 //input TX battery
