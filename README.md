@@ -5,13 +5,14 @@ It contains the telemetry of the monitored RX voltage by means of a flashing LED
 This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo](https://github.com/stanekTM/RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo)
 
 ### Function:
-* Motor A (steering) = 3.9kHz (pwm 1, 2)
-* Motor B (throttle) = 3.9kHz (pwm 3, 4)
-* Brake = on, off or adjustable effect 
-* Normal mode = LED RX is lit
-* Battery voltage 1S LiPo (4.2V) < 3.3V = RX, TX LEDs flash at a interval of 500ms
-* TX transmitter off or signal loss = RX LED flash at a interval of 100ms 
-* Fail-safe = Motor A and B stopped
+Calibration:
+Hold calibration button (pin D4), switch transmitter TX on, still holding calibration button move all controls to extremes including auxilliary pots.
+Center all controls and aux pots.
+Release calibration button.
+Do not switch transmitter TX off during calibration, the calibration values cant be saved if the set has been switched off!
+#
+Servo reversing:
+By holding joysticks over on power up (saved to eeprom).
 
 ### Arduino pins:
 * A0 - joystick 1
