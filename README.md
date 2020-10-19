@@ -1,5 +1,5 @@
 # RC_TX_nRF24L01_Telemetry_LED
-It is a simple surface 4 channel RC transmitter for direct control of the nRF24L01 transceiver on the Arduino with ATmega328P for cars and boats.
+It is a simple surface 4-5 channel RC transmitter for direct control of the nRF24L01 transceiver on the Arduino with ATmega328P for cars and boats.
 It contains the telemetry of the monitored RX voltage by means of a flashing LED indication.
 
 This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo](https://github.com/stanekTM/RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo)
@@ -15,13 +15,14 @@ This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Te
 * By holding joysticks over on power up (saved to eeprom).
 
 ## Arduino pins:
-* A0 - joystick 1
-* A1 - joystick 2
-* A2 - potentiometer 3
-* A3 - potentiometer 4
+* A0 - pot 1
+* A1 - pot 2
+* A2 - pot 3
+* A3 - pot 4
+* A4 - pot 5 (only version without calibration)
 # 
 * D2 - LED
-* D4 - calibration button
+* D4 - calibration button (calibration version only)
 * A7 - input TX battery
 #
 nRF24L01:
