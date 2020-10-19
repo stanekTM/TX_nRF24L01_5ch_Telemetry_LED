@@ -13,12 +13,12 @@
 //pin            A5
 //pin            A6
 
-//pins for joysticks and switches
-#define joy1     A0
-#define joy2     A1
-#define joy3     A2
-#define joy4     A3
-#define joy5     A4
+//pins for pots, joysticks
+#define pot1     A0
+#define pot2     A1
+#define pot3     A2
+#define pot4     A3
+#define pot5     A4
 
 //LED RX, TX battery and RF on/off
 #define led      2
@@ -62,12 +62,12 @@ struct ackPayload
 ackPayload payload;
 
 //************************************************************************************************************************************************************************
-//inputs of control joysticks and switches *******************************************************************************************************************************
+//read pots, joysticks ***************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
 int valmin = 342; //joystick path compensation for 1000us to 2000us Hitec Ranger 2AM
 int valmax = 1023 - valmin;
 
-void inputJoystick()
+void read_pots()
 {
 /*
  * Read all analog inputs and map them to one byte value
@@ -76,17 +76,19 @@ void inputJoystick()
  * Convert the analog read value from 0 to 1023 into a byte value from 1000us to 2000us
  */ 
 
-  rc_data.steering = map(analogRead(joy1), valmin, valmax, 1000, 2000);
+  rc_data.steering = map(analogRead(pot1), valmin, valmax, 1000, 2000);
   rc_data.steering = constrain(rc_data.steering, 1000, 2000);
   
-  rc_data.throttle = map(analogRead(joy2), valmin, valmax, 1000, 2000);
+  rc_data.throttle = map(analogRead(pot2), valmin, valmax, 1000, 2000);
   rc_data.throttle = constrain(rc_data.throttle, 1000, 2000);
  
-  rc_data.ch3 = map(analogRead(joy3), 0, 1023, 1000, 2000);
-  rc_data.ch3 = constrain(rc_data.ch3, 1000, 2000); 
-  rc_data.ch4 = map(analogRead(joy4), 0, 1023, 1000, 2000);
+  rc_data.ch3 = map(analogRead(pot3), 0, 1023, 1000, 2000);
+  rc_data.ch3 = constrain(rc_data.ch3, 1000, 2000);
+   
+  rc_data.ch4 = map(analogRead(pot4), 0, 1023, 1000, 2000);
   rc_data.ch4 = constrain(rc_data.ch4, 1000, 2000);
-  rc_data.ch5 = map(analogRead(joy5), 0, 1023, 1000, 2000);
+  
+  rc_data.ch5 = map(analogRead(pot5), 0, 1023, 1000, 2000);
   rc_data.ch5 = constrain(rc_data.ch5, 1000, 2000);
 
 //  Serial.println(rc_data.throttle); //print value ​​on a serial monitor  
@@ -127,7 +129,7 @@ void loop()
   receive_time();
   send_and_receive_data();
                                                             
-  inputJoystick();
+  read_pots();
 
   battery_voltage();
 
