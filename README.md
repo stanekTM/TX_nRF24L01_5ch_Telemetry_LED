@@ -19,10 +19,10 @@ This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Te
 * A1 - pot 2
 * A2 - pot 3
 * A3 - pot 4
-* A4 - pot 5 (only version without calibration)
+* A4 - pot 5
 # 
 * D2 - LED
-* D4 - calibration button (calibration version only)
+* D4 - calibration button
 * A7 - input TX battery
 #
 nRF24L01:
@@ -33,11 +33,7 @@ nRF24L01:
 * D13 - SCK
 
 ## Code:
-No semi-automatic calibration, settings are made in code
-[RC_TX_nRF24L01_Telemetry_LED](https://github.com/stanekTM/RC_TX_nRF24L01_Telemetry_LED/blob/master/RC_TX_nRF24L01_Telemetry_LED/RC_TX_nRF24L01_Telemetry_LED.ino)
-
-Semi-automatic calibration
-[RC_TX_nRF24L01_Telemetry_LED_Calibration](https://github.com/stanekTM/RC_TX_nRF24L01_Telemetry_LED/blob/master/RC_TX_nRF24L01_Telemetry_LED_Calibration/RC_TX_nRF24L01_Telemetry_LED_Calibration.ino)
+[RC_TX_nRF24L01_Telemetry_LED](https://github.com/stanekTM/RC_TX_nRF24L01_Telemetry_LED/blob/master/RC_TX_nRF24L01_Telemetry_LED.ino)
 
 ## Used libraries:
 * <SPI.h>  Arduino standard library
