@@ -1,19 +1,12 @@
 /*
+ Thanks to "Phil_G" http://www.singlechannel.co.uk philg@talk21.com for the calibration and reverse routine I used in the code.
  Calibration:
- Hold calibration button (pin D4), switch transmitter TX on, 
- still holding calibration button move all controls to extremes including auxilliary pots.
+ Hold calibration button, switch transmitter TX on, still holding calibration button move all controls to extremes including auxilliary pots. 
  Center all controls and aux pots.
- Release calibration button.
- Do not switch transmitter TX off during calibration, 
- the calibration values cant be saved if the set has been switched off!
-
+ Release calibration button (saved to eeprom).
  Servo reversing:
  By holding joysticks over on power up (saved to eeprom).
 */
-
-// If you use this software in whole or in part please acknowledge its source - Phil_G on most forums, 
-// philg@talk21.com  http://www.singlechannel.co.uk
-
 //************************************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
@@ -22,9 +15,7 @@
 #include <RF24.h>     // https://github.com/nRF24/RF24
 #include <nRF24L01.h>
 
-//************************************************************************************************************************************************************************
-// Config PPM settings ***************************************************************************************************************************************************
-//************************************************************************************************************************************************************************
+// Config PPM settings
 #define servoMid    1500
 #define servoMin    1000
 #define servoMax    2000
