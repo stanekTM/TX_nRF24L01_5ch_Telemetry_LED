@@ -85,7 +85,7 @@ ackPayload payload;
 //************************************************************************************************************************************************************************
 //read pots, joysticks ***************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
-int raw, ch, calibrated = 1, pot_calib_min[] = {0, 0, 0, 0, 0}, pot_calib_max[] = {1023, 1023, 1023, 1023, 1023}, pot_calib_mid[] = {512, 512, 512, 512, 512};
+int tempReading, ch, calibrated = 1, pot_calib_min[] = {0, 0, 0, 0, 0}, pot_calib_max[] = {1023, 1023, 1023, 1023, 1023}, pot_calib_mid[] = {512, 512, 512, 512, 512};
 int ppm[] = {1500, 1500, 1500, 1500, 1500};
 byte reverse[] = {0, 0, 0, 0, 0};
 
@@ -101,11 +101,11 @@ void read_pots()
 
   for (ch = 0; ch < 5; ch++)
   {
-    raw = analogRead(ch);
-    if (raw > pot_calib_mid[ch])
-    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p);
+    tempReading = analogRead(ch);
+    if (tempReading > pot_calib_mid[ch])
+    ppm[ch] = map(tempReading, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p);
     else
-    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n, 0);
+    ppm[ch] = map(tempReading, pot_calib_max[ch], pot_calib_mid[ch], epa_n, 0);
   }
  
   // format the frame
@@ -127,10 +127,10 @@ void calibrate_pots()
     calibrated = 0;
     for (int pot = 0; pot < 5; ++pot)
     {
-      raw = analogRead(pot);
-      if (raw > pot_calib_min[pot]) pot_calib_min[pot] = raw;
-      if (raw < pot_calib_max[pot]) pot_calib_max[pot] = raw;
-      pot_calib_mid[pot] = raw;  // save neutral pots, joysticks as button is released
+      tempReading = analogRead(pot);
+      if (tempReading > pot_calib_min[pot]) pot_calib_min[pot] = tempReading;
+      if (tempReading < pot_calib_max[pot]) pot_calib_max[pot] = tempReading;
+      pot_calib_mid[pot] = tempReading;  // save neutral pots, joysticks as button is released
     }
   }  //calibrate button released
 
