@@ -5,7 +5,7 @@
  Center all controls and aux pots.
  Release calibration button (saved to eeprom).
  Servo reversing:
- By holding joysticks over on power up (saved to eeprom).
+ To reverse the desired channel, hold the joystick in the end position and turn on the TX transmitter (saved to eeprom).
 */
 //************************************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
