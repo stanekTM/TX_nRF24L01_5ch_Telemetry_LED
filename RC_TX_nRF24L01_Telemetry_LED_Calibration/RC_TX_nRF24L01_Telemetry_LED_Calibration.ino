@@ -22,10 +22,14 @@
 #include <RF24.h>     // https://github.com/nRF24/RF24
 #include <nRF24L01.h>
 
-
-#define servoMid 1500 // Servo center value (us)
-#define servoMin 1000 // Min ppm output to be mapped (us)
-#define servoMax 2000 // Max ppm output to be mapped (us)
+//************************************************************************************************************************************************************************
+// Config PPM settings ***************************************************************************************************************************************************
+//************************************************************************************************************************************************************************
+#define servoMid 1500
+#define servoMin 1000
+#define servoMax 2000
+#define epa_p    500
+#define epa_n   -500
 
 //free pins
 //pin            3
@@ -92,8 +96,6 @@ ackPayload payload;
 //************************************************************************************************************************************************************************
 int raw, ch, calibrated = 1, pot_calib_min[] = {0, 0, 0, 0}, pot_calib_max[] = {1023, 1023, 1023, 1023}, pot_calib_mid[] = {512, 512, 512, 512};
 int ppm[] = {1500, 1500, 1500, 1500};
-int epa_p[] = {500, 500, 500, 500};
-int epa_n[] = {-500, -500, -500, -500};
 byte reverse[] = {0, 0, 0, 0};
 
 void read_pots()
@@ -103,64 +105,8 @@ void read_pots()
   rc_data.ch3      = ppm[2]; //A2
   rc_data.ch4      = ppm[3]; //A3
 
-  //read pot steering A0
-  for (ch = 0; ch < 1; ch++)
-  {
-    raw = analogRead(ch);
-    if (raw > pot_calib_mid[ch])
-    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[0]);
-    else
-    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[0], 0);
-    
-    ppm[ch] += servoMid;
-    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
-    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
-  }
+  Serial.println(rc_data.steering); //print value ​​on a serial monitor  
 
-  //read pot throttle A1
-  for (ch = 1; ch < 2; ch++)
-  {
-    raw = analogRead(ch);
-    if (raw > pot_calib_mid[ch])
-    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[1]);
-    else
-    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[1], 0);
-    
-//    ppm[ch] += servoMid;
-//    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
-//    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
-  }
-
-  //read pot ch3 A2
-  for (ch = 2; ch < 3; ch++)
-  {
-    raw = analogRead(ch);
-    if (raw > pot_calib_mid[ch])
-    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[2]);
-    else
-    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[2], 0);
-    
-//    ppm[ch] += servoMid;
-//    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
-//    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
-  }
-
-  //read pot ch4 A3
-  for (ch = 3; ch < 4; ch++)
-  {
-    raw = analogRead(ch);
-    if (raw > pot_calib_mid[ch])
-    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[3]);
-    else
-    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[3], 0);
-    
-//    ppm[ch] += servoMid;
-//    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
-//    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
-  }
-  
-/*
-  // read sticks
   for (ch = 0; ch < 4; ch++)
   {
     raw = analogRead(ch);
@@ -177,9 +123,6 @@ void read_pots()
     ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
     if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
-*/
-  
-  Serial.println(rc_data.steering); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
@@ -208,9 +151,9 @@ void calibrate_pots()
       EEPROMWriteInt(ch * 6 + 4, pot_calib_min[ch]); // eeprom locations  4, 10, 16, 22 (decimal)
     }
     calibrated = 1;
-    digitalWrite(led, HIGH);
-    delay(30);
-    digitalWrite(led, LOW);
+//    digitalWrite(led, HIGH);
+//    delay(30);
+//    digitalWrite(led, LOW);
   }
   
   for (ch = 0; ch < 4; ch++)
