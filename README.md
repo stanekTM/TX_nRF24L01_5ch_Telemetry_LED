@@ -13,7 +13,7 @@ This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Te
 * Release calibration button (saved to eeprom).
 #
 ### Servo reversing:
-* By holding joysticks over on power up (saved to eeprom).
+* To reverse the desired channel, hold the joystick in the end position and turn on the TX transmitter (saved to eeprom).
 
 ## Arduino pins:
 * A0 - pot 1
