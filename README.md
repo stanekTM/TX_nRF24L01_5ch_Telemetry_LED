@@ -2,6 +2,8 @@
 It is a simple surface 4-5 channel RC transmitter for direct control of the nRF24L01 transceiver on the Arduino with ATmega328P for cars and boats.
 It contains the telemetry of the monitored RX voltage by means of a flashing LED indication.
 
+Thanks to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
+
 This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo](https://github.com/stanekTM/RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo)
 
 ## Function:
