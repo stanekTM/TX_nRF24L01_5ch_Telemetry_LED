@@ -92,8 +92,9 @@ ackPayload payload;
 //************************************************************************************************************************************************************************
 int raw, ch, calibrated = 1, pot_calib_min[] = {0, 0, 0, 0}, pot_calib_max[] = {1023, 1023, 1023, 1023}, pot_calib_mid[] = {512, 512, 512, 512};
 int ppm[] = {1500, 1500, 1500, 1500};
-int epa_p[] = {500, 500, 600, 600};
-int epa_n[] = {-500, -500, -600, - 600};
+int epa_p[] = {500, 500, 500, 500};
+int epa_n[] = {-500, -500, -500, -500};
+byte reverse[] = {0, 0, 0, 0};
 
 void read_pots()
 {
@@ -110,9 +111,10 @@ void read_pots()
     ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[0]);
     else
     ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[0], 0);
+    
     ppm[ch] += servoMid;
     ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
-//    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
+    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
 
   //read pot throttle A1
@@ -123,8 +125,9 @@ void read_pots()
     ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[1]);
     else
     ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[1], 0);
-    ppm[ch] += servoMid;
-    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
+    
+//    ppm[ch] += servoMid;
+//    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
 //    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
 
@@ -136,8 +139,9 @@ void read_pots()
     ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[2]);
     else
     ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[2], 0);
-    ppm[ch] += servoMid;
-    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
+    
+//    ppm[ch] += servoMid;
+//    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
 //    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
 
@@ -149,12 +153,33 @@ void read_pots()
     ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p[3]);
     else
     ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n[3], 0);
-    ppm[ch] += servoMid;
-    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
+    
+//    ppm[ch] += servoMid;
+//    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
 //    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
   
-//  Serial.println(rc_data.steering); //print value ​​on a serial monitor
+/*
+  // read sticks
+  for (ch = 0; ch < 4; ch++)
+  {
+    raw = analogRead(ch);
+    if (raw > pot_calib_mid[ch])
+    ppm[ch] = map(raw, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p);
+    else
+    ppm[ch] = map(raw, pot_calib_max[ch], pot_calib_mid[ch], epa_n, 0);
+  }
+ 
+  // format the frame
+  for (ch = 0; ch < 4; ch++)
+  {
+    ppm[ch] += servoMid;
+    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
+    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
+  }
+*/
+  
+  Serial.println(rc_data.steering); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
@@ -183,15 +208,29 @@ void calibrate_pots()
       EEPROMWriteInt(ch * 6 + 4, pot_calib_min[ch]); // eeprom locations  4, 10, 16, 22 (decimal)
     }
     calibrated = 1;
-    }
-    for (ch = 0; ch < 4; ch++)
+    digitalWrite(led, HIGH);
+    delay(30);
+    digitalWrite(led, LOW);
+  }
+  
+  for (ch = 0; ch < 4; ch++)
+  {
+    pot_calib_max[ch] = EEPROMReadInt(ch * 6);     // eeprom locations  0,  6, 12, 18 (decimal)
+    pot_calib_mid[ch] = EEPROMReadInt(ch * 6 + 2); // eeprom locations  2,  8, 14, 20 (decimal)
+    pot_calib_min[ch] = EEPROMReadInt(ch * 6 + 4); // eeprom locations  4, 10, 16, 22 (decimal)
+    reverse[ch] = EEPROM.read(ch + 24) & 1;        // eeprom locations 24, 25, 26, 27 (decimal)
+  }
+  
+  // check for reversing, stick over on power-up
+  for (ch = 0; ch < 4; ch++)
+  {
+    ppm[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], epa_n, epa_p);
+    if (ppm[ch] > epa_p - 50 || ppm[ch] < epa_n + 50)
     {
-      pot_calib_max[ch] = EEPROMReadInt(ch * 6);       // eeprom locations  0,  6, 12, 18 (decimal)
-      pot_calib_mid[ch] = EEPROMReadInt(ch * 6 + 2);   // eeprom locations  2,  8, 14, 20 (decimal)
-      pot_calib_min[ch] = EEPROMReadInt(ch * 6 + 4);   // eeprom locations  4, 10, 16, 22 (decimal)
-//      reverse[ch] = EEPROM.read(ch + 24) & 1;        // eeprom locations 24, 25, 26, 27 (decimal)
-//      reverse[3] = 0;                                // no throttle reverse for safety
+      reverse[ch] ^= B00000001;
+      EEPROM.write(24 + ch, reverse[ch]);
     }
+  }
 }
 
 //************************************************************************************************************************************************************************
@@ -220,7 +259,7 @@ unsigned int EEPROMReadInt(int p_address)
 //************************************************************************************************************************************************************************
 void setup()
 { 
-//  Serial.begin(9600);
+  Serial.begin(9600);
 
   calibrate_pots();
 
