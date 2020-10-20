@@ -97,7 +97,7 @@ void read_pots()
   rc_data.ch4      = ppm[3]; //A3
   rc_data.ch5      = ppm[4]; //A4
 
-  Serial.println(rc_data.steering); //print value ​​on a serial monitor  
+//  Serial.println(rc_data.steering); //print value ​​on a serial monitor  
 
   for (ch = 0; ch < 5; ch++)
   {
@@ -194,7 +194,7 @@ unsigned int EEPROMReadInt(int p_address)
 //************************************************************************************************************************************************************************
 void setup()
 { 
-  Serial.begin(9600);
+//  Serial.begin(9600); //print value ​​on a serial monitor
 
   calibrate_pots();
 
