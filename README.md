@@ -1,5 +1,5 @@
 # RC_TX_nRF24L01_Telemetry_LED
-It is a simple 5 channel RC transmitter for direct control of the nRF24L01 transceiver on the Arduino with ATmega328P for cars and boats.
+It is a simple 5 channel RC transmitter for direct control of the nRF24L01 transceiver on the Arduino with ATmega328P for RC models.
 It contains the telemetry of the monitored RX voltage by means of a flashing LED indication.
 
 Thanks to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
