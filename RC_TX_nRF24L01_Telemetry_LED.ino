@@ -15,7 +15,14 @@
 #include <RF24.h>     // https://github.com/nRF24/RF24
 #include <nRF24L01.h>
 
-// Config PPM settings
+// TX battery voltage settings
+#define TX_battery_voltage   4.2
+#define TX_monitored_voltage 3.3
+
+// RX voltage monitoring settings
+#define RX_monitored_voltage 3.3
+
+// PPM settings
 #define servoMid    1500
 #define servoMin    1000
 #define servoMax    2000
@@ -229,7 +236,7 @@ void loop()
                                                             
   read_pots();
   
-  battery_voltage();
+  TX_batt_check();
 
 } //end program loop
 
@@ -242,7 +249,7 @@ void receive_time()
 {
   if(millis() >= lastRxTime + 1000) //1000 (1second)
   {
-    RFoff_indication();
+    RFoff_check();
   }
 }
 
@@ -258,7 +265,7 @@ void send_and_receive_data()
       radio.read(&payload, sizeof(ackPayload));
       
       lastRxTime = millis(); //at this moment we have received the data 
-      RXbatt_indication();                                     
+      RX_batt_check();                                   
     }                              
   } 
 }
@@ -266,53 +273,44 @@ void send_and_receive_data()
 //************************************************************************************************************************************************************************
 //input measurement TX battery voltage 1S LiPo (4.2V) < 3.3V = LED flash at a interval of 200ms. Battery OK = LED TX is lit **********************************************
 //************************************************************************************************************************************************************************
+float raw_TX_batt;
 unsigned long ledTime = 0;
-int ledState, detect;
-float TXbatt;
+int ledState;
 
-void battery_voltage()
-{ 
-  //----------------------------- TX battery --
-  TXbatt = analogRead(inTXbatt) * (4.2 / 1023);
-
-  //--------------- monitored voltage
-  detect = TXbatt <= 3.3;
-
-  if (detect)
-  {
-    TXbatt_indication();
-  }
-  
-//  Serial.println(TXbatt); //print value ​​on a serial monitor 
-}
-
-//-----------------------------------------------------------
-void TXbatt_indication()
+void TX_batt_check()
 {
-  if (millis() >= ledTime + 200) //1000 (1second)
+  raw_TX_batt = analogRead(inTXbatt) * (TX_battery_voltage / 1023);
+  
+  if (raw_TX_batt <= TX_monitored_voltage)
   {
-    ledTime = millis();
-    
-    if (ledState)
+    if (millis() >= ledTime + 200) //1000 (1second)
     {
-      ledState = LOW;
-    }
-    else
-    {
-      ledState = HIGH;
-    }   
-    digitalWrite(led, ledState);
+      ledTime = millis();
+      
+      if (ledState)
+      {
+        ledState = LOW;
+      }
+      else
+      {
+        ledState = HIGH;
+      }   
+      digitalWrite(led, ledState);
+    }  
   }
+   
+//  Serial.println(raw_TX_batt); //print value ​​on a serial monitor 
 }
 
 //************************************************************************************************************************************************************************
 //after receiving RF data, the monitored RX battery is activated *********************************************************************************************************
 //RX battery voltage 1S LiPo (4.2V) < 3.3V = LEDs TX, RX flash at a interval of 500ms. Battery OK = LEDs TX, RX is lit ***************************************************
 //************************************************************************************************************************************************************************
-void RXbatt_indication()
-{ 
-  //------------------------ monitored voltage
-  detect = payload.RXbatt <= 3.3;
+int detect;
+
+void RX_batt_check()
+{
+  detect = payload.RXbatt <= RX_monitored_voltage;
   
   if (millis() >= ledTime + 500) //1000 (1second)
   {
@@ -325,15 +323,15 @@ void RXbatt_indication()
     else
     {
       ledState = HIGH;
-    }   
+    }
     digitalWrite(led, ledState);
-  }
+  }    
 }
 
 //************************************************************************************************************************************************************************
 //when TX is switched on and RX is switched off, or after the loss of RF data = LED TX flash at a interval of 100 ms. Normal mode = LED TX is lit ************************
 //************************************************************************************************************************************************************************
-void RFoff_indication()
+void RFoff_check()
 {
   if (millis() >= ledTime + 100) //1000 (1second)
   {
@@ -348,6 +346,6 @@ void RFoff_indication()
       ledState = HIGH;
     }   
     digitalWrite(led, ledState);
-  }
+  } 
 }
  
