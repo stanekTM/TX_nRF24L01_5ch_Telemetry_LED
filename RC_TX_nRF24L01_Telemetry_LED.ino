@@ -68,15 +68,15 @@ RF24 radio(CE, CSN); //setup CE and CSN pins
 const byte addresses[][6] = {"tx001", "rx002"};
 
 //************************************************************************************************************************************************************************
-//this structure defines the sent data in bytes (structure size max. 32 bytes), values ​​(servoMin = 1000us, servoMid = 1500us, servoMax = 2000us) *************************
+//this structure defines the sent data in bytes **************************************************************************************************************************
 //************************************************************************************************************************************************************************
 struct packet
 {
-  unsigned int steering = servoMid;
-  unsigned int throttle = servoMid;
-  unsigned int ch3      = servoMid;
-  unsigned int ch4      = servoMid;
-  unsigned int ch5      = servoMid;
+  unsigned int steering;
+  unsigned int throttle;
+  unsigned int ch3;
+  unsigned int ch4;
+  unsigned int ch5;
 };
 packet rc_data; //create a variable with the above structure
 
@@ -98,14 +98,6 @@ byte reverse[] = {0, 0, 0, 0, 0};
 
 void read_pots()
 {
-  rc_data.steering = ppm[0]; //A0
-  rc_data.throttle = ppm[1]; //A1
-  rc_data.ch3      = ppm[2]; //A2
-  rc_data.ch4      = ppm[3]; //A3
-  rc_data.ch5      = ppm[4]; //A4
-
-//  Serial.println(rc_data.steering); //print value ​​on a serial monitor  
-
   for (ch = 0; ch < 5; ch++)
   {
     tempReading = analogRead(ch);
@@ -122,6 +114,14 @@ void read_pots()
     ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
     if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
+
+  rc_data.steering = ppm[0]; //A0
+  rc_data.throttle = ppm[1]; //A1
+  rc_data.ch3      = ppm[2]; //A2
+  rc_data.ch4      = ppm[3]; //A3
+  rc_data.ch5      = ppm[4]; //A4
+
+//  Serial.println(rc_data.steering); //print value ​​on a serial monitor  
 }
 
 //************************************************************************************************************************************************************************
