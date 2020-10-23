@@ -160,7 +160,7 @@ void calibrate_pots()
     pot_calib_max[ch] = EEPROMReadInt(ch * 6);     // eeprom locations  0,  6, 12, 18 (decimal)
     pot_calib_mid[ch] = EEPROMReadInt(ch * 6 + 2); // eeprom locations  2,  8, 14, 20 (decimal)
     pot_calib_min[ch] = EEPROMReadInt(ch * 6 + 4); // eeprom locations  4, 10, 16, 22 (decimal)
-    reverse[ch] = EEPROM.read(ch + 24) & 1;        // eeprom locations 24, 25, 26, 27 (decimal)
+    reverse[ch] = EEPROM.read(ch + 30) & 1;        // eeprom locations 30, 31, 32, 33 (decimal), ch * 6 = 30
   }
   
   // check for reversing, stick over on power-up
@@ -170,7 +170,7 @@ void calibrate_pots()
     if (ppm[ch] > epa_p - 50 || ppm[ch] < epa_n + 50)
     {
       reverse[ch] ^= B00000001;
-      EEPROM.write(24 + ch, reverse[ch]);
+      EEPROM.write(30 + ch, reverse[ch]); // ch * 6 = 30
     }
   }
 }
