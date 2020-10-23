@@ -139,7 +139,7 @@ void calibrate_pots()
       if (tempReading < pot_calib_max[pot]) pot_calib_max[pot] = tempReading;
       pot_calib_mid[pot] = tempReading;  // save neutral pots, joysticks as button is released
     }
-  }  //calibrate button released
+  }   //calibrate button released
 
   if (calibrated == 0)
   {
@@ -150,9 +150,6 @@ void calibrate_pots()
       EEPROMWriteInt(ch * 6 + 4, pot_calib_min[ch]); // eeprom locations  4, 10, 16, 22 (decimal)
     }
     calibrated = 1;
-//    digitalWrite(led, HIGH);
-//    delay(30);
-//    digitalWrite(led, LOW);
   }
   
   for (ch = 0; ch < 5; ch++)
