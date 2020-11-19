@@ -15,14 +15,14 @@
 #include <RF24.h>     // https://github.com/nRF24/RF24
 #include <nRF24L01.h>
 
-// TX battery voltage settings
+//TX battery voltage settings
 #define TX_battery_voltage   4.2
 #define TX_monitored_voltage 3.3
 
-// RX voltage monitoring settings
+//RX voltage monitoring settings
 #define RX_monitored_voltage 3.3
 
-// PPM settings
+//PPM settings
 #define servoMid    1500
 #define servoMin    1000
 #define servoMax    2000
@@ -70,16 +70,16 @@ RF24 radio(CE, CSN);
 #define radio_channel 76
 
 //setting RF channels addresses
-const byte tx_address[] = "tx001";
-const byte rx_address[] = "rx002";
+const byte tx_rx_address[] = "tx001";
+const byte rx_p1_address[] = "rx002";
 
 //************************************************************************************************************************************************************************
 //this structure defines the sent data in bytes **************************************************************************************************************************
 //************************************************************************************************************************************************************************
 struct packet
 {
-  unsigned int steering;
-  unsigned int throttle;
+  unsigned int ch1;
+  unsigned int ch2;
   unsigned int ch3;
   unsigned int ch4;
   unsigned int ch5;
@@ -121,13 +121,13 @@ void read_pots()
     if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
 
-  rc_data.steering = ppm[0]; //A0
-  rc_data.throttle = ppm[1]; //A1
-  rc_data.ch3      = ppm[2]; //A2
-  rc_data.ch4      = ppm[3]; //A3
-  rc_data.ch5      = ppm[4]; //A4
+  rc_data.ch1 = ppm[0]; //A0
+  rc_data.ch2 = ppm[1]; //A1
+  rc_data.ch3 = ppm[2]; //A2
+  rc_data.ch4 = ppm[3]; //A3
+  rc_data.ch5 = ppm[4]; //A4
 
-//  Serial.println(rc_data.steering); //print value ​​on a serial monitor  
+//  Serial.println(rc_data.ch1); //print value ​​on a serial monitor  
 }
 
 //************************************************************************************************************************************************************************
@@ -231,8 +231,8 @@ void setup()
   
   radio.stopListening();           //set the module as transmitter. Stop listening for incoming messages, and switch to transmit mode
   
-  radio.openWritingPipe(rx_address);    //open a pipe for writing via byte array. Call "stopListening" first
-  radio.openReadingPipe(1, tx_address); //open all the required reading pipes                                         
+  radio.openWritingPipe(rx_p1_address);    //open a pipe for writing via byte array. Call "stopListening" first
+  radio.openReadingPipe(1, tx_rx_address); //open all the required reading pipes                                         
 }
 
 //************************************************************************************************************************************************************************
