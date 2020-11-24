@@ -25,48 +25,50 @@
 #define RX_monitored_voltage 3.3
 
 //PPM settings
-#define servoMid    1500
-#define servoMin    1000
-#define servoMax    2000
-#define epa_p       500
-#define epa_n      -500
+#define servoMid         1500
+#define servoMin         1000
+#define servoMax         2000
+#define epa_p            500
+#define epa_n           -500
 
 //free pins
-//pin                3
-//pin                5
-//pin                6
-//pin                7
-//pin                8
-//pin                A5
-//pin                A6 
+//pin                    0
+//pin                    1
+//pin                    3
+//pin                    5
+//pin                    6
+//pin                    7
+//pin                    8
+//pin                    A5
+//pin                    A6 
 
 //pins for pots, joysticks
-//pot1               A0
-//pot2               A1
-//pot3               A2
-//pot4               A3
-//pot5               A4
+//pot1                   A0
+//pot2                   A1
+//pot3                   A2
+//pot4                   A3
+//pot5                   A4
 
 //LED RX, TX battery and RF on/off
-#define led          2
+#define pin_LED          2
 
 //calibration button
-#define button_calib 4
+#define pin_button_calib 4
 
 //input TX battery
-#define inTXbatt     A7
+#define pin_TXbatt       A7
 
 //pins for nRF24L01
-#define CE           9
-#define CSN          10
+#define pin_CE           9
+#define pin_CSN          10
 
 //hardware SPI
-//----- MOSI         11 
-//----- MISO         12 
-//----- SCK          13 
+//----- MOSI             11 
+//----- MISO             12 
+//----- SCK              13 
 
 //setting of CE and CSN pins
-RF24 radio(CE, CSN);
+RF24 radio(pin_CE, pin_CSN);
 
 //RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)
 #define radio_channel 76
@@ -137,7 +139,7 @@ void read_pots()
 //************************************************************************************************************************************************************************
 void calibrate_pots()
 { 
-  while (digitalRead(button_calib) == 0)
+  while (digitalRead(pin_button_calib) == 0)
   {
     calibrated = 0;
     for (int pot = 0; pot < 5; ++pot)
@@ -210,9 +212,9 @@ void setup()
 
   calibrate_pots();
 
-  pinMode(led, OUTPUT);
-  pinMode(inTXbatt, INPUT);
-  pinMode(button_calib, INPUT_PULLUP);
+  pinMode(pin_LED, OUTPUT);
+  pinMode(pin_TXbatt, INPUT);
+  pinMode(pin_button_calib, INPUT_PULLUP);
   
   //define the radio communication
   radio.begin();  
@@ -290,7 +292,7 @@ int ledState;
 
 void TX_batt_check()
 {
-  raw_TX_batt = analogRead(inTXbatt) * (TX_battery_voltage / 1023);
+  raw_TX_batt = analogRead(pin_TXbatt) * (TX_battery_voltage / 1023);
   
   if (raw_TX_batt <= TX_monitored_voltage)
   {
@@ -306,7 +308,7 @@ void TX_batt_check()
       {
         ledState = HIGH;
       }   
-      digitalWrite(led, ledState);
+      digitalWrite(pin_LED, ledState);
     }  
   }
    
@@ -335,7 +337,7 @@ void RX_batt_check()
     {
       ledState = HIGH;
     }
-    digitalWrite(led, ledState);
+    digitalWrite(pin_LED, ledState);
   }    
 }
 
@@ -356,7 +358,7 @@ void RFoff_check()
     {
       ledState = HIGH;
     }   
-    digitalWrite(led, ledState);
+    digitalWrite(pin_LED, ledState);
   } 
 }
  
