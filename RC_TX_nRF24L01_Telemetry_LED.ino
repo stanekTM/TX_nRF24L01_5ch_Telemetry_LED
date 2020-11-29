@@ -22,7 +22,7 @@
 #define TX_monitored_voltage 3.3
 
 //RX voltage monitoring settings
-#define RX_monitored_voltage 3.3
+#define RX_monitored_voltage 3.49
 
 //PPM settings
 #define servoMid         1500
@@ -260,7 +260,7 @@ unsigned long lastRxTime = 0;
 
 void receive_time()
 {
-  if(millis() >= lastRxTime + 1000) //1000 (1second)
+  if(millis() >= lastRxTime + 400) //400 = 3.3VCC, 1000 = 5VCC
   {
     RFoff_check();
   }
@@ -284,7 +284,7 @@ void send_and_receive_data()
 }
 
 //************************************************************************************************************************************************************************
-//input measurement TX battery voltage 1S LiPo (4.2V) < 3.3V = LED flash at a interval of 200ms. Battery OK = LED TX is lit **********************************************
+//input measurement TX_battery_voltage < TX_monitored_voltage = LED flash 5Hz. Battery OK = LED TX is lit ****************************************************************
 //************************************************************************************************************************************************************************
 float raw_TX_batt;
 unsigned long ledTime = 0;
@@ -296,7 +296,7 @@ void TX_batt_check()
   
   if (raw_TX_batt <= TX_monitored_voltage)
   {
-    if (millis() >= ledTime + 200) //1000 (1second)
+    if (millis() >= ledTime + 60) //60 = 3.3VCC, 200 = 5VCC
     {
       ledTime = millis();
       
@@ -317,7 +317,7 @@ void TX_batt_check()
 
 //************************************************************************************************************************************************************************
 //after receiving RF data, the monitored RX battery is activated *********************************************************************************************************
-//RX battery voltage 1S LiPo (4.2V) < 3.3V = LEDs TX, RX flash at a interval of 500ms. Battery OK = LEDs TX, RX is lit ***************************************************
+//RX_monitored_voltage < RX_monitored_voltage = LEDs TX, RX flash 2Hz. Battery OK = LEDs TX, RX is lit *******************************************************************
 //************************************************************************************************************************************************************************
 int detect;
 
@@ -325,7 +325,7 @@ void RX_batt_check()
 {
   detect = payload.RXbatt <= RX_monitored_voltage;
   
-  if (millis() >= ledTime + 500) //1000 (1second)
+  if (millis() >= ledTime + 200) //200 = 3.3VCC, 500 = 5VCC
   {
     ledTime = millis();
     
@@ -342,11 +342,11 @@ void RX_batt_check()
 }
 
 //************************************************************************************************************************************************************************
-//when TX is switched on and RX is switched off, or after the loss of RF data = LED TX flash at a interval of 100 ms. Normal mode = LED TX is lit ************************
+//when TX is switched on and RX is switched off, or after the loss of RF data = LED TX flash 10Hz. Normal mode = LED TX is lit *******************************************
 //************************************************************************************************************************************************************************
 void RFoff_check()
 {
-  if (millis() >= ledTime + 100) //1000 (1second)
+  if (millis() >= ledTime + 30) //30 = 3.3VCC, 100 = 5VCC
   {
     ledTime = millis();
     
