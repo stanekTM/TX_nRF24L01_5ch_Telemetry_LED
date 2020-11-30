@@ -284,7 +284,7 @@ void send_and_receive_data()
 }
 
 //************************************************************************************************************************************************************************
-//input measurement TX_battery_voltage < TX_monitored_voltage = LED flash 5Hz. Battery OK = LED TX is lit ****************************************************************
+//input measurement TX_battery_voltage < TX_monitored_voltage = LED flash at a interval of 0.2s. Battery OK = LED TX is lit **********************************************
 //************************************************************************************************************************************************************************
 float raw_TX_batt;
 unsigned long ledTime = 0;
@@ -317,7 +317,7 @@ void TX_batt_check()
 
 //************************************************************************************************************************************************************************
 //after receiving RF data, the monitored RX battery is activated *********************************************************************************************************
-//RX_monitored_voltage < RX_monitored_voltage = LEDs TX, RX flash 2Hz. Battery OK = LEDs TX, RX is lit *******************************************************************
+//RX_monitored_voltage < RX_monitored_voltage = LEDs TX, RX flash at a interval of 0.5s. Battery OK = LEDs TX, RX is lit *************************************************
 //************************************************************************************************************************************************************************
 int detect;
 
@@ -342,7 +342,7 @@ void RX_batt_check()
 }
 
 //************************************************************************************************************************************************************************
-//when TX is switched on and RX is switched off, or after the loss of RF data = LED TX flash 10Hz. Normal mode = LED TX is lit *******************************************
+//when TX is switched on and RX is switched off, or after the loss of RF data = LED TX flash at a interval of 0.1s. Normal mode = LED TX is lit **************************
 //************************************************************************************************************************************************************************
 void RFoff_check()
 {
