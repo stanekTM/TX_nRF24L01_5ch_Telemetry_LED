@@ -17,6 +17,13 @@
 #include <RF24.h>     // https://github.com/nRF24/RF24
 #include <nRF24L01.h>
 
+
+//setting RF channels address (5 bytes number or character)
+const byte address[] = "jirka";
+
+//RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)
+#define radio_channel        76
+
 //TX battery voltage settings
 #define TX_battery_voltage   4.2
 #define TX_monitored_voltage 3.3
@@ -69,13 +76,6 @@
 
 //setting of CE and CSN pins
 RF24 radio(pin_CE, pin_CSN);
-
-//RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)
-#define radio_channel 76
-
-//setting RF channels addresses
-const byte tx_rx_address[] = "tx001";
-const byte rx_p1_address[] = "rx002";
 
 //************************************************************************************************************************************************************************
 //this structure defines the sent data in bytes **************************************************************************************************************************
@@ -206,6 +206,8 @@ unsigned int EEPROMReadInt(int p_address)
 //************************************************************************************************************************************************************************
 //initial main settings **************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
+uint8_t invert_address = ~address[5]; //Invert bits for reading so that telemetry packets have a different address
+
 void setup()
 { 
 //  Serial.begin(9600); //print value ​​on a serial monitor
@@ -235,8 +237,8 @@ void setup()
   
   radio.stopListening();           //set the module as transmitter. Stop listening for incoming messages, and switch to transmit mode
   
-  radio.openWritingPipe(rx_p1_address);    //open a pipe for writing via byte array. Call "stopListening" first
-  radio.openReadingPipe(1, tx_rx_address); //open all the required reading pipes                                         
+  radio.openWritingPipe(address);           //open the pipe, but first call "stopListening"
+  radio.openReadingPipe(1, invert_address); //open the reading pipe 1 and invert bits for so that telemetry packets have a different address                                        
 }
 
 //************************************************************************************************************************************************************************
