@@ -319,7 +319,7 @@ void TX_batt_check()
 
 //************************************************************************************************************************************************************************
 //after receiving RF data, the monitored RX battery is activated *********************************************************************************************************
-//RX_monitored_voltage < RX_monitored_voltage = LEDs TX, RX flash at a interval of 0.5s. Battery OK = LEDs TX, RX is lit *************************************************
+//RX battery voltage(payload.RXbatt) < RX_monitored_voltage = LEDs TX, RX flash at a interval of 0.5s. Battery OK = LEDs TX, RX is lit ***********************************
 //************************************************************************************************************************************************************************
 int detect;
 
