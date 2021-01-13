@@ -15,7 +15,6 @@ This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Te
 * Hold calibration button, switch transmitter TX on, still holding calibration button move all controls to extremes including auxilliary pots.
 * Center all controls and aux pots.
 * Release calibration button (saved to eeprom).
-#
 ### Servo reversing:
 * To reverse the desired channel, hold the joystick in the end position and turn on the TX transmitter (saved to eeprom).
 
