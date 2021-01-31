@@ -26,7 +26,7 @@ This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Te
 * A4 - pot 5
 # 
 * D2 - LED
-* D4 - calibration button
+* D4 - calibration button (I had to add a 10K resistor -> VCC even when the internal INPUT_PULLUP is activated)
 * A7 - input TX battery
 #
 nRF24L01:
