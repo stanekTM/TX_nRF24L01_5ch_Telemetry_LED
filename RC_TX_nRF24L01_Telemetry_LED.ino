@@ -60,7 +60,7 @@ const byte address[] = "jirka";
 #define pin_LED          2
 
 //calibration button
-#define pin_button_calib 4
+#define pin_button_calib 4 //I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated
 
 //input TX battery
 #define pin_TXbatt       A7
