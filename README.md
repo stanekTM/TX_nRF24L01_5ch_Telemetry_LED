@@ -36,9 +36,6 @@ nRF24L01:
 * D12 - MISO
 * D13 - SCK
 
-## Code:
-[RC_TX_nRF24L01_Telemetry_LED](https://github.com/stanekTM/RC_TX_nRF24L01_Telemetry_LED/blob/master/RC_TX_nRF24L01_Telemetry_LED.ino)
-
 ## Used libraries:
 * <SPI.h>  Arduino standard library
 * <RF24.h> https://github.com/nRF24/RF24 v1.3.9
