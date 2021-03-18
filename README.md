@@ -1,4 +1,4 @@
-# RC_TX_nRF24L01_Telemetry_LED
+# RC TX nRF24L01 5ch
 Surface 5 channel RC transmitter nRF24L01 with ATmega328P 5V/16Mhz, Arduino Nano or Pro Mini for cars, boats and robots.
 It contains the telemetry of the monitored RX voltage by means of a flashing LED indication.
 
