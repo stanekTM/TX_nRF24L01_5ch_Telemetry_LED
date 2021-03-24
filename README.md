@@ -4,7 +4,7 @@ It contains the telemetry of the monitored RX voltage by means of a flashing LED
 
 Thanks to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
 
-This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo](https://github.com/stanekTM/RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo)
+This RC transmitter works with RC receiver from my repository [RC_RX_nRF24L01_Telemetry_Motor_Driver_Servo](https://github.com/stanekTM/RX_nRF24L01_Telemetry_Motor_Driver_Servo)
 
 ## Function:
 * Normal mode = LED TX is lit
