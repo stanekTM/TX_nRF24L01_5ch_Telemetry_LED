@@ -31,11 +31,11 @@ const byte address[] = "jirka";
 #define RX_monitored_voltage 3.49
 
 //PPM settings
-#define servoMid         1500
-#define servoMin         1000
-#define servoMax         2000
-#define epa_p            500
-#define epa_n           -500
+#define servo_min        1000
+#define servo_mid        1500
+#define servo_max        2000
+#define epa_positive     500
+#define epa_negative    -500
 
 //free pins
 //pin                    0
@@ -113,16 +113,16 @@ void read_pots()
   {
     tempReading = analogRead(ch);
     if (tempReading > pot_calib_mid[ch])
-    ppm[ch] = map(tempReading, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_p);
+    ppm[ch] = map(tempReading, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_positive);
     else
-    ppm[ch] = map(tempReading, pot_calib_max[ch], pot_calib_mid[ch], epa_n, 0);
+    ppm[ch] = map(tempReading, pot_calib_max[ch], pot_calib_mid[ch], epa_negative, 0);
   }
  
   // format the frame
   for (ch = 0; ch < 5; ch++)
   {
-    ppm[ch] += servoMid;
-    ppm[ch] = constrain(ppm[ch], servoMin, servoMax);
+    ppm[ch] += servo_mid;
+    ppm[ch] = constrain(ppm[ch], servo_min, servo_max);
     if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
 
@@ -174,8 +174,8 @@ void calibrate_pots()
   // check for reversing, stick over on power-up
   for (ch = 0; ch < 5; ch++)
   {
-    ppm[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], epa_n, epa_p);
-    if (ppm[ch] > epa_p - 50 || ppm[ch] < epa_n + 50)
+    ppm[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], epa_negative, epa_positive);
+    if (ppm[ch] > epa_positive - 50 || ppm[ch] < epa_negative + 50)
     {
       reverse[ch] ^= B00000001;
       EEPROM.write(30 + ch, reverse[ch]); // ch * 6 = 30
