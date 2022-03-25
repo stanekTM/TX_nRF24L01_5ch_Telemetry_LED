@@ -4,7 +4,7 @@
 // Support for Arduino-based receivers and RF24 libraries from this repository https://github.com/stanekTM/RX_nRF24L01_Telemetry_Motor_Driver_Servo *
 // Thanks to "Phil_G" http://www.singlechannel.co.uk philg@talk21.com for the calibration and reverse routine I used in the code.                   *
 // Calibration:                                                                                                                                     *
-// Hold calibration button, switch transmitter TX on, still holding calibration button move all controls to extremes including auxilliary pots.     * 
+// Hold calibration button, switch transmitter TX on, still holding calibration button move all controls to extremes including auxilliary pots.     *
 // Center all controls and aux pots.                                                                                                                *
 // Release calibration button (saved to eeprom).                                                                                                    *
 // Servo reversing:                                                                                                                                 *
@@ -117,7 +117,7 @@ void read_pots()
     else
     ppm[ch] = map(tempReading, pot_calib_max[ch], pot_calib_mid[ch], epa_negative, 0);
   }
- 
+  
   // format the frame
   for (ch = 0; ch < 5; ch++)
   {
@@ -125,21 +125,21 @@ void read_pots()
     ppm[ch] = constrain(ppm[ch], servo_min, servo_max);
     if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
-
+  
   rc_packet.ch1 = ppm[0]; //A0
   rc_packet.ch2 = ppm[1]; //A1
   rc_packet.ch3 = ppm[2]; //A2
   rc_packet.ch4 = ppm[3]; //A3
   rc_packet.ch5 = ppm[4]; //A4
 
-//  Serial.println(rc_packet.ch1); //print value ​​on a serial monitor  
+//  Serial.println(rc_packet.ch1); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
 //calibrate pots, joysticks **********************************************************************************************************************************************
 //************************************************************************************************************************************************************************
 void calibrate_pots()
-{ 
+{
   while (digitalRead(pin_button_calib) == 0)
   {
     calibrated = 0;
@@ -151,7 +151,7 @@ void calibrate_pots()
       pot_calib_mid[pot] = tempReading;  // save neutral pots, joysticks as button is released
     }
   }   //calibrate button released
-
+  
   if (calibrated == 0)
   {
     for (ch = 0; ch < 5; ch++)
@@ -220,41 +220,35 @@ void setup()
   pinMode(pin_button_calib, INPUT_PULLUP);
   
   //define the radio communication
-  radio.begin();  
+  radio.begin();
   radio.setAutoAck(true);          //ensure autoACK is enabled (default true)
   radio.enableAckPayload();        //enable Ack dynamic payloads. This only works on pipes 0&1 by default
   radio.enableDynamicPayloads();   //enable dynamic payloads on all pipes
   
-//  radio.enableDynamicAck();
-//  radio.setPayloadSize(10);        //set static payload size. Default max. 32 bytes
-//  radio.setCRCLength(RF24_CRC_16); //RF24_CRC_8, RF24_CRC_16
-//  radio.setAddressWidth(5);        //the address width in bytes 3, 4 or 5 (24, 32 or 40 bit)
-
   radio.setRetries(5, 5);          //set the number and delay of retries on failed submit (max. 15 x 250us delay (blocking !), max. 15 retries)
   
   radio.setChannel(radio_channel); //which RF channel to communicate on (0-125, 2.4Ghz + 76 = 2.476Ghz)
   radio.setDataRate(RF24_250KBPS); //RF24_250KBPS (fails for units without +), RF24_1MBPS, RF24_2MBPS
-  radio.setPALevel(RF24_PA_MIN);   //RF24_PA_MIN (-18dBm), RF24_PA_LOW (-12dBm), RF24_PA_HIGH (-6dbm), RF24_PA_MAX (0dBm) 
+  radio.setPALevel(RF24_PA_MIN);   //RF24_PA_MIN (-18dBm), RF24_PA_LOW (-12dBm), RF24_PA_HIGH (-6dbm), RF24_PA_MAX (0dBm)
   
   radio.stopListening();           //set the module as transmitter. Stop listening for incoming messages, and switch to transmit mode
   
   radio.openWritingPipe(address);           //open the writing pipe0 (RX_ADDR_P0 + TX_ADDR), but first call "stopListening"
-  radio.openReadingPipe(1, invert_address); //open the reading pipe1 (RX_ADDR_P1)                                        
+  radio.openReadingPipe(1, invert_address); //open the reading pipe1 (RX_ADDR_P1)
 }
 
 //************************************************************************************************************************************************************************
 //program loop ***********************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
 void loop()
-{ 
+{
   receive_time();
-  send_and_receive_data(); 
-                                                            
+  send_and_receive_data();
+
   read_pots();
   
   TX_batt_check();
-
-} //end program loop
+}
 
 //************************************************************************************************************************************************************************
 //after losing RF data or turning off the RX, gain time and the LED flashing *********************************************************************************************
@@ -280,10 +274,10 @@ void send_and_receive_data()
     {
       radio.read(&telemetry_packet, sizeof(telemetry_packet_size));
       
-      lastRxTime = millis(); //at this moment we have received the data 
-      RX_batt_check();                                   
-    }                              
-  } 
+      lastRxTime = millis(); //at this moment we have received the data
+      RX_batt_check();
+    }
+  }
 }
 
 //************************************************************************************************************************************************************************
@@ -310,12 +304,12 @@ void TX_batt_check()
       else
       {
         ledState = HIGH;
-      }   
+      }
       digitalWrite(pin_LED, ledState);
-    }  
+    }
   }
    
-//  Serial.println(raw_TX_batt); //print value ​​on a serial monitor 
+//  Serial.println(raw_TX_batt); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
@@ -342,7 +336,7 @@ void RX_batt_check()
     }
     digitalWrite(pin_LED, ledState);
   }
-//  Serial.println(telemetry_packet.RX_batt_A1); //print value ​​on a serial monitor    
+//  Serial.println(telemetry_packet.RX_batt_A1); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
@@ -361,8 +355,8 @@ void RFoff_check()
     else
     {
       ledState = HIGH;
-    }   
+    }
     digitalWrite(pin_LED, ledState);
-  } 
+  }
 }
  
