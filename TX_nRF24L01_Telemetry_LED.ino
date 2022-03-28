@@ -30,10 +30,10 @@ const byte address[] = "jirka";
 //RX voltage monitoring settings
 #define RX_monitored_voltage 3.49
 
-//PPM settings
-#define servo_min        1000
-#define servo_mid        1500
-#define servo_max        2000
+//setting the control range value
+#define min_control_val 1000
+#define mid_control_val 1500
+#define max_control_val 2000
 #define epa_positive     500
 #define epa_negative    -500
 
@@ -121,8 +121,8 @@ void read_pots()
   // format the frame
   for (ch = 0; ch < 5; ch++)
   {
-    ppm[ch] += servo_mid;
-    ppm[ch] = constrain(ppm[ch], servo_min, servo_max);
+    ppm[ch] += mid_control_val;
+    ppm[ch] = constrain(ppm[ch], min_control_val, max_control_val);
     if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
   }
   
