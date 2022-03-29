@@ -1,6 +1,8 @@
 # RC TX nRF24L01 5ch
-Surface 5 channel RC transmitter nRF24L01 with ATmega328P 5V/16Mhz, Arduino Nano or Pro Mini for cars, boats and robots.
+Surface 5 channel RC transmitter nRF24L01 with ATmega328P/16Mhz, Arduino Nano or Pro Mini for cars, boats and robots.
 It contains the telemetry of the monitored RX voltage by means of a flashing LED indication.
+
+Note: I use (Arduino) ATmega328P 5V/16Mhz and supply VCC only with 3.3V voltage.
 
 Thanks to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
 
