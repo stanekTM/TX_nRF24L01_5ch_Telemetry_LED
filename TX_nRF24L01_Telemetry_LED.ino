@@ -62,7 +62,7 @@ const byte address[] = "jirka";
 #define pin_button_calib 4
 
 //input TX battery
-#define pin_TXbatt       A7
+#define pin_TX_battery   A7
 
 //pins for nRF24L01
 #define pin_CE           9
@@ -216,7 +216,7 @@ void setup()
   calibrate_pots();
 
   pinMode(pin_LED, OUTPUT);
-  pinMode(pin_TXbatt, INPUT);
+  pinMode(pin_TX_battery, INPUT);
   pinMode(pin_button_calib, INPUT_PULLUP);
   
   //define the radio communication
@@ -283,15 +283,15 @@ void send_and_receive_data()
 //************************************************************************************************************************************************************************
 //input measurement TX_battery_voltage < TX_monitored_voltage = LED flash at a interval of 0.2s. Battery OK = LED TX is lit **********************************************
 //************************************************************************************************************************************************************************
-float raw_TX_batt;
+float val_TX_battery;
 unsigned long ledTime = 0;
 int ledState;
 
 void TX_batt_check()
 {
-  raw_TX_batt = analogRead(pin_TXbatt) * (TX_battery_voltage / 1023);
+  val_TX_battery = analogRead(pin_TX_battery) * (TX_battery_voltage / 1023);
   
-  if (raw_TX_batt <= TX_monitored_voltage)
+  if (val_TX_battery <= TX_monitored_voltage)
   {
     if (millis() >= ledTime + 200)
     {
@@ -309,7 +309,7 @@ void TX_batt_check()
     }
   }
    
-//  Serial.println(raw_TX_batt); //print value ​​on a serial monitor
+//  Serial.println(val_TX_battery); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
