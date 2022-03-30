@@ -103,34 +103,34 @@ telemetry_packet_size telemetry_packet;
 //************************************************************************************************************************************************************************
 //read pots, joysticks ***************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
-int tempReading, ch, calibrated = 1, pot_calib_min[] = {0, 0, 0, 0, 0}, pot_calib_max[] = {1023, 1023, 1023, 1023, 1023}, pot_calib_mid[] = {512, 512, 512, 512, 512};
-int ppm[] = {1500, 1500, 1500, 1500, 1500};
+int raw_pots, ch, calibrated = 1, pot_calib_min[] = {0, 0, 0, 0, 0}, pot_calib_max[] = {1023, 1023, 1023, 1023, 1023}, pot_calib_mid[] = {512, 512, 512, 512, 512};
+int pots_value[] = {1500, 1500, 1500, 1500, 1500};
 byte reverse[] = {0, 0, 0, 0, 0};
 
 void read_pots()
 {
   for (ch = 0; ch < 5; ch++)
   {
-    tempReading = analogRead(ch);
-    if (tempReading > pot_calib_mid[ch])
-    ppm[ch] = map(tempReading, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_positive);
+    raw_pots = analogRead(ch);
+    if (raw_pots > pot_calib_mid[ch])
+    pots_value[ch] = map(raw_pots, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_positive);
     else
-    ppm[ch] = map(tempReading, pot_calib_max[ch], pot_calib_mid[ch], epa_negative, 0);
+    pots_value[ch] = map(raw_pots, pot_calib_max[ch], pot_calib_mid[ch], epa_negative, 0);
   }
   
   // format the frame
   for (ch = 0; ch < 5; ch++)
   {
-    ppm[ch] += mid_control_val;
-    ppm[ch] = constrain(ppm[ch], min_control_val, max_control_val);
-    if (reverse[ch] == 1) ppm[ch] = 3000 - ppm[ch];
+    pots_value[ch] += mid_control_val;
+    pots_value[ch] = constrain(pots_value[ch], min_control_val, max_control_val);
+    if (reverse[ch] == 1) pots_value[ch] = 3000 - pots_value[ch];
   }
   
-  rc_packet.ch1 = ppm[0]; //A0
-  rc_packet.ch2 = ppm[1]; //A1
-  rc_packet.ch3 = ppm[2]; //A2
-  rc_packet.ch4 = ppm[3]; //A3
-  rc_packet.ch5 = ppm[4]; //A4
+  rc_packet.ch1 = pots_value[0]; //A0
+  rc_packet.ch2 = pots_value[1]; //A1
+  rc_packet.ch3 = pots_value[2]; //A2
+  rc_packet.ch4 = pots_value[3]; //A3
+  rc_packet.ch5 = pots_value[4]; //A4
 
 //  Serial.println(rc_packet.ch1); //print value ​​on a serial monitor
 }
@@ -145,10 +145,10 @@ void calibrate_pots()
     calibrated = 0;
     for (int pot = 0; pot < 5; ++pot)
     {
-      tempReading = analogRead(pot);
-      if (tempReading > pot_calib_min[pot]) pot_calib_min[pot] = tempReading;
-      if (tempReading < pot_calib_max[pot]) pot_calib_max[pot] = tempReading;
-      pot_calib_mid[pot] = tempReading;  // save neutral pots, joysticks as button is released
+      raw_pots = analogRead(pot);
+      if (raw_pots > pot_calib_min[pot]) pot_calib_min[pot] = raw_pots;
+      if (raw_pots < pot_calib_max[pot]) pot_calib_max[pot] = raw_pots;
+      pot_calib_mid[pot] = raw_pots;  // save neutral pots, joysticks as button is released
     }
   }   //calibrate button released
   
@@ -174,8 +174,8 @@ void calibrate_pots()
   // check for reversing, stick over on power-up
   for (ch = 0; ch < 5; ch++)
   {
-    ppm[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], epa_negative, epa_positive);
-    if (ppm[ch] > epa_positive - 50 || ppm[ch] < epa_negative + 50)
+    pots_value[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], epa_negative, epa_positive);
+    if (pots_value[ch] > epa_positive - 50 || pots_value[ch] < epa_negative + 50)
     {
       reverse[ch] ^= B00000001;
       EEPROM.write(30 + ch, reverse[ch]); // ch * 6 = 30
