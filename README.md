@@ -6,7 +6,7 @@ Note: I use (Arduino) ATmega328P 5V/16Mhz and supply VCC only with 3.3V voltage.
 
 Thanks to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
 
-This RC transmitter works with RC receiver from my repository [RX_nRF24L01_Telemetry_Motor_Driver_Servo](https://github.com/stanekTM/RX_nRF24L01_Telemetry_Motor_Driver_Servo)
+This RC transmitter works with RC receiver from my repository [RX_nRF24L01_Telemetry_Motor_Driver_Servo](https://github.com/stanekTM/RX_nRF24L01_Telemetry_Motor_Servo)
 
 ## Function:
 * Normal mode = LED TX is lit
