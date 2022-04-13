@@ -21,60 +21,60 @@
 const byte address[] = "jirka";
 
 //RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)
-#define radio_channel        76
+#define RADIO_CHANNEL         76
 
 //TX battery voltage settings
-#define TX_battery_voltage   4.2
-#define TX_monitored_voltage 3.3
+#define TX_BATTERY_VOLTAGE    4.2
+#define TX_MONITORED_VOLTAGE  3.3
 
 //RX voltage monitoring settings
-#define RX_monitored_voltage 3.49
+#define RX_MONITORED_VOLTAGE  3.49
 
 //setting the control range value
-#define min_control_val 1000
-#define mid_control_val 1500
-#define max_control_val 2000
-#define epa_positive     500
-#define epa_negative    -500
+#define MIN_CONTROL_VAL       1000
+#define MID_CONTROL_VAL       1500
+#define MAX_CONTROL_VAL       2000
+#define EPA_POSITIVE          500
+#define EPA_NEGATIVE         -500
 
 //free pins
-//pin                    0
-//pin                    1
-//pin                    3
-//pin                    5
-//pin                    6
-//pin                    7
-//pin                    8
-//pin                    A5
-//pin                    A6 
+//pin                     0
+//pin                     1
+//pin                     3
+//pin                     5
+//pin                     6
+//pin                     7
+//pin                     8
+//pin                     A5
+//pin                     A6 
 
 //pins for pots, joysticks
-//pot1                   A0
-//pot2                   A1
-//pot3                   A2
-//pot4                   A3
-//pot5                   A4
+//pot1                    A0
+//pot2                    A1
+//pot3                    A2
+//pot4                    A3
+//pot5                    A4
 
 //LED RX, TX battery and RF on/off
-#define pin_LED          2
+#define PIN_LED           2
 
 //calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)
-#define pin_button_calib 4
+#define PIN_BUTTON_CALIB  4
 
 //input TX battery
-#define pin_TX_battery   A7
+#define PIN_TX_BATTERY    A7
 
 //pins for nRF24L01
-#define pin_CE           9
-#define pin_CSN          10
+#define PIN_CE            9
+#define PIN_CSN           10
 
 //hardware SPI
-//----- MOSI             11 
-//----- MISO             12 
-//----- SCK              13 
+//----- MOSI              11 
+//----- MISO              12 
+//----- SCK               13 
 
 //setting of CE and CSN pins
-RF24 radio(pin_CE, pin_CSN);
+RF24 radio(PIN_CE, PIN_CSN);
 
 //************************************************************************************************************************************************************************
 //this structure defines the sent data in bytes **************************************************************************************************************************
@@ -113,16 +113,16 @@ void read_pots()
   {
     raw_pots = analogRead(ch);
     if (raw_pots > pot_calib_mid[ch])
-    pots_value[ch] = map(raw_pots, pot_calib_mid[ch], pot_calib_min[ch], 0, epa_positive);
+    pots_value[ch] = map(raw_pots, pot_calib_mid[ch], pot_calib_min[ch], 0, EPA_POSITIVE);
     else
-    pots_value[ch] = map(raw_pots, pot_calib_max[ch], pot_calib_mid[ch], epa_negative, 0);
+    pots_value[ch] = map(raw_pots, pot_calib_max[ch], pot_calib_mid[ch], EPA_NEGATIVE, 0);
   }
   
   // format the frame
   for (ch = 0; ch < 5; ch++)
   {
-    pots_value[ch] += mid_control_val;
-    pots_value[ch] = constrain(pots_value[ch], min_control_val, max_control_val);
+    pots_value[ch] += MID_CONTROL_VAL;
+    pots_value[ch] = constrain(pots_value[ch], MIN_CONTROL_VAL, MAX_CONTROL_VAL);
     if (reverse[ch] == 1) pots_value[ch] = 3000 - pots_value[ch];
   }
   
@@ -140,7 +140,7 @@ void read_pots()
 //************************************************************************************************************************************************************************
 void calibrate_pots()
 {
-  while (digitalRead(pin_button_calib) == 0)
+  while (digitalRead(PIN_BUTTON_CALIB) == 0)
   {
     calibrated = 0;
     for (int pot = 0; pot < 5; ++pot)
@@ -174,8 +174,8 @@ void calibrate_pots()
   // check for reversing, stick over on power-up
   for (ch = 0; ch < 5; ch++)
   {
-    pots_value[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], epa_negative, epa_positive);
-    if (pots_value[ch] > epa_positive - 50 || pots_value[ch] < epa_negative + 50)
+    pots_value[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], EPA_NEGATIVE, EPA_POSITIVE);
+    if (pots_value[ch] > EPA_POSITIVE - 50 || pots_value[ch] < EPA_NEGATIVE + 50)
     {
       reverse[ch] ^= B00000001;
       EEPROM.write(30 + ch, reverse[ch]); // ch * 6 = 30
@@ -215,9 +215,9 @@ void setup()
 
   calibrate_pots();
 
-  pinMode(pin_LED, OUTPUT);
-  pinMode(pin_TX_battery, INPUT);
-  pinMode(pin_button_calib, INPUT_PULLUP);
+  pinMode(PIN_LED, OUTPUT);
+  pinMode(PIN_TX_BATTERY, INPUT);
+  pinMode(PIN_BUTTON_CALIB, INPUT_PULLUP);
   
   //define the radio communication
   radio.begin();
@@ -227,7 +227,7 @@ void setup()
   
   radio.setRetries(5, 5);          //set the number and delay of retries on failed submit (max. 15 x 250us delay (blocking !), max. 15 retries)
   
-  radio.setChannel(radio_channel); //which RF channel to communicate on (0-125, 2.4Ghz + 76 = 2.476Ghz)
+  radio.setChannel(RADIO_CHANNEL); //which RF channel to communicate on (0-125, 2.4Ghz + 76 = 2.476Ghz)
   radio.setDataRate(RF24_250KBPS); //RF24_250KBPS (fails for units without +), RF24_1MBPS, RF24_2MBPS
   radio.setPALevel(RF24_PA_MIN);   //RF24_PA_MIN (-18dBm), RF24_PA_LOW (-12dBm), RF24_PA_HIGH (-6dbm), RF24_PA_MAX (0dBm)
   
@@ -281,7 +281,7 @@ void send_and_receive_data()
 }
 
 //************************************************************************************************************************************************************************
-//input measurement TX_battery_voltage < TX_monitored_voltage = LED flash at a interval of 0.2s. Battery OK = LED TX is lit **********************************************
+//input measurement TX_BATTERY_VOLTAGE < TX_MONITORED_VOLTAGE = LED flash at a interval of 0.2s. Battery OK = LED TX is lit **********************************************
 //************************************************************************************************************************************************************************
 float val_TX_battery;
 unsigned long ledTime = 0;
@@ -289,9 +289,9 @@ int ledState;
 
 void TX_batt_check()
 {
-  val_TX_battery = analogRead(pin_TX_battery) * (TX_battery_voltage / 1023);
+  val_TX_battery = analogRead(PIN_TX_BATTERY) * (TX_BATTERY_VOLTAGE / 1023);
   
-  if (val_TX_battery <= TX_monitored_voltage)
+  if (val_TX_battery <= TX_MONITORED_VOLTAGE)
   {
     if (millis() >= ledTime + 200)
     {
@@ -305,7 +305,7 @@ void TX_batt_check()
       {
         ledState = HIGH;
       }
-      digitalWrite(pin_LED, ledState);
+      digitalWrite(PIN_LED, ledState);
     }
   }
    
@@ -314,13 +314,13 @@ void TX_batt_check()
 
 //************************************************************************************************************************************************************************
 //after receiving RF data, the monitored RX battery is activated *********************************************************************************************************
-//RX battery voltage(payload.RXbatt) < RX_monitored_voltage = LEDs TX, RX flash at a interval of 0.5s. Battery OK = LEDs TX, RX is lit ***********************************
+//RX battery voltage(payload.RXbatt) < RX_MONITORED_VOLTAGE = LEDs TX, RX flash at a interval of 0.5s. Battery OK = LEDs TX, RX is lit ***********************************
 //************************************************************************************************************************************************************************
 int detect;
 
 void RX_batt_check()
 {
-  detect = telemetry_packet.RX_batt_A1 <= RX_monitored_voltage;
+  detect = telemetry_packet.RX_batt_A1 <= RX_MONITORED_VOLTAGE;
   
   if (millis() >= ledTime + 500)
   {
@@ -334,7 +334,7 @@ void RX_batt_check()
     {
       ledState = HIGH;
     }
-    digitalWrite(pin_LED, ledState);
+    digitalWrite(PIN_LED, ledState);
   }
 //  Serial.println(telemetry_packet.RX_batt_A1); //print value ​​on a serial monitor
 }
@@ -356,7 +356,7 @@ void RFoff_check()
     {
       ledState = HIGH;
     }
-    digitalWrite(pin_LED, ledState);
+    digitalWrite(PIN_LED, ledState);
   }
 }
  
