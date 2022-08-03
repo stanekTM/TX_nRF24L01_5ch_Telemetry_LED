@@ -8,7 +8,7 @@ Thanks to "Phil_G" http://www.singlechannel.co.uk for the calibration and revers
 
 This RC transmitter works with RC receiver from my repository [RX_nRF24L01_Telemetry_Motor_Servo](https://github.com/stanekTM/RX_nRF24L01_Telemetry_Motor_Servo)
 
-## Function:
+## Function
 * Normal mode = LED TX is lit
 * TX battery voltage 1S LiPo (4.2V) < TX monitored voltage = TX LED flash at a interval of 0.2s
 * RX battery voltage 1S LiPo (4.2V) < RX monitored voltage = TX, RX LEDs flash at a interval of 0.5s
@@ -20,25 +20,35 @@ This RC transmitter works with RC receiver from my repository [RX_nRF24L01_Telem
 ### Servo reversing:
 * To reverse the desired channel, hold the joystick in the end position and turn on the TX transmitter (saved to eeprom).
 
-## Arduino pins:
+## Arduino pins
 * A0 - pot 1
 * A1 - pot 2
 * A2 - pot 3
 * A3 - pot 4
 * A4 - pot 5
-# 
-* D2 - LED
-* D4 - calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)
-* A7 - input TX battery
-#
-nRF24L01:
-* D9  - CE
-* D10 - CSN
-* D11 - MOSI
-* D12 - MISO
-* D13 - SCK
 
-## Used libraries:
+## Arduino pins
+```
+A0 - pot 1
+A1 - pot 2
+A2 - pot 3
+A3 - pot 4
+A4 - pot 5
+
+D4 - calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)
+D2 - LED
+
+A7 - input TX battery
+
+nRF24L01:
+D9  - CE
+D10 - CSN
+D11 - MOSI
+D12 - MISO
+D13 - SCK
+```
+
+## Used libraries
 * <SPI.h>  Arduino standard library
 * <RF24.h> https://github.com/nRF24/RF24 v1.3.9
 #
