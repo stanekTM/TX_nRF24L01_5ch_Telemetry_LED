@@ -21,13 +21,6 @@ This RC transmitter works with RC receiver from my repository [RX_nRF24L01_Telem
 * To reverse the desired channel, hold the joystick in the end position and turn on the TX transmitter (saved to eeprom).
 
 ## Arduino pins
-* A0 - pot 1
-* A1 - pot 2
-* A2 - pot 3
-* A3 - pot 4
-* A4 - pot 5
-
-## Arduino pins
 ```
 A0 - pot 1
 A1 - pot 2
