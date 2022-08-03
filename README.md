@@ -28,9 +28,8 @@ A2 - pot 3
 A3 - pot 4
 A4 - pot 5
 
-D4 - calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)
 D2 - LED
-
+D4 - calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)
 A7 - input TX battery
 
 nRF24L01:
