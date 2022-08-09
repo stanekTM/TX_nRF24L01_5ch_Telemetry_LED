@@ -94,9 +94,9 @@ rc_packet_size rc_packet; //create a variable with the above structure
 //************************************************************************************************************************************************************************
 struct telemetry_packet_size
 {
-  uint8_t rssi;     // not used yet
+  uint8_t rssi;     //not used yet
   float RX_batt_A1;
-  float RX_batt_A2; // not used yet
+  float RX_batt_A2; //not used yet
 };
 telemetry_packet_size telemetry_packet;
 
@@ -148,7 +148,7 @@ void calibrate_pots()
       raw_pots = analogRead(pot);
       if (raw_pots > pot_calib_min[pot]) pot_calib_min[pot] = raw_pots;
       if (raw_pots < pot_calib_max[pot]) pot_calib_max[pot] = raw_pots;
-      pot_calib_mid[pot] = raw_pots;  // save neutral pots, joysticks as button is released
+      pot_calib_mid[pot] = raw_pots;  //save neutral pots, joysticks as button is released
     }
   }   //calibrate button released
   
@@ -156,29 +156,29 @@ void calibrate_pots()
   {
     for (ch = 0; ch < 5; ch++)
     {
-      EEPROMWriteInt(ch * 6,     pot_calib_max[ch]); // eeprom locations  0,  6, 12, 18 (decimal)
-      EEPROMWriteInt(ch * 6 + 2, pot_calib_mid[ch]); // eeprom locations  2,  8, 14, 20 (decimal)
-      EEPROMWriteInt(ch * 6 + 4, pot_calib_min[ch]); // eeprom locations  4, 10, 16, 22 (decimal)
+      EEPROMWriteInt(ch * 6,     pot_calib_max[ch]); //eeprom locations  0,  6, 12, 18 (decimal)
+      EEPROMWriteInt(ch * 6 + 2, pot_calib_mid[ch]); //eeprom locations  2,  8, 14, 20 (decimal)
+      EEPROMWriteInt(ch * 6 + 4, pot_calib_min[ch]); //eeprom locations  4, 10, 16, 22 (decimal)
     }
     calibrated = 1;
   }
   
   for (ch = 0; ch < 5; ch++)
   {
-    pot_calib_max[ch] = EEPROMReadInt(ch * 6);     // eeprom locations  0,  6, 12, 18 (decimal)
-    pot_calib_mid[ch] = EEPROMReadInt(ch * 6 + 2); // eeprom locations  2,  8, 14, 20 (decimal)
-    pot_calib_min[ch] = EEPROMReadInt(ch * 6 + 4); // eeprom locations  4, 10, 16, 22 (decimal)
-    reverse[ch] = EEPROM.read(ch + 30) & 1;        // eeprom locations 30, 31, 32, 33 (decimal), ch * 6 = 30
+    pot_calib_max[ch] = EEPROMReadInt(ch * 6);     //eeprom locations  0,  6, 12, 18 (decimal)
+    pot_calib_mid[ch] = EEPROMReadInt(ch * 6 + 2); //eeprom locations  2,  8, 14, 20 (decimal)
+    pot_calib_min[ch] = EEPROMReadInt(ch * 6 + 4); //eeprom locations  4, 10, 16, 22 (decimal)
+    reverse[ch] = EEPROM.read(ch + 30) & 1;        //eeprom locations 30, 31, 32, 33 (decimal), ch * 6 = 30
   }
   
-  // check for reversing, stick over on power-up
+  //check for reversing, stick over on power-up
   for (ch = 0; ch < 5; ch++)
   {
     pots_value[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], EPA_NEGATIVE, EPA_POSITIVE);
     if (pots_value[ch] > EPA_POSITIVE - 50 || pots_value[ch] < EPA_NEGATIVE + 50)
     {
       reverse[ch] ^= B00000001;
-      EEPROM.write(30 + ch, reverse[ch]); // ch * 6 = 30
+      EEPROM.write(30 + ch, reverse[ch]); //ch * 6 = 30
     }
   }
 }
@@ -207,7 +207,7 @@ unsigned int EEPROMReadInt(int p_address)
 //************************************************************************************************************************************************************************
 //initial main settings **************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
-uint8_t invert_address = ~address[5]; //Invert bits for reading so that telemetry packets have a different address
+uint8_t invert_address = ~address[5]; //invert bits for reading so that telemetry packets have a different address
 
 void setup()
 { 
@@ -308,7 +308,7 @@ void TX_batt_check()
       digitalWrite(PIN_LED, ledState);
     }
   }
-   
+  
 //  Serial.println(val_TX_battery); //print value ​​on a serial monitor
 }
 
@@ -336,6 +336,7 @@ void RX_batt_check()
     }
     digitalWrite(PIN_LED, ledState);
   }
+  
 //  Serial.println(telemetry_packet.RX_batt_A1); //print value ​​on a serial monitor
 }
 
