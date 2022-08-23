@@ -211,7 +211,7 @@ uint8_t invert_address = ~address[5]; //invert bits for reading so that telemetr
 
 void setup()
 { 
-//  Serial.begin(9600); //print value ​​on a serial monitor
+//  Serial.begin(9600); //print value on a serial monitor
 
   calibrate_pots();
 
