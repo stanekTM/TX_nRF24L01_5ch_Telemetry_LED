@@ -46,7 +46,7 @@ const byte address[] = "jirka";
 //pin                     7
 //pin                     8
 //pin                     A5
-//pin                     A6 
+//pin                     A6
 
 //pins for pots, joysticks
 //pot1                    A0
@@ -94,7 +94,7 @@ rc_packet_size rc_packet; //create a variable with the above structure
 //************************************************************************************************************************************************************************
 struct telemetry_packet_size
 {
-  uint8_t rssi;     //not used yet
+  byte rssi;     //not used yet
   float RX_batt_A1;
   float RX_batt_A2; //not used yet
 };
@@ -131,8 +131,8 @@ void read_pots()
   rc_packet.ch3 = pots_value[2]; //A2
   rc_packet.ch4 = pots_value[3]; //A3
   rc_packet.ch5 = pots_value[4]; //A4
-
-//  Serial.println(rc_packet.ch1); //print value ​​on a serial monitor
+  
+  //Serial.println(rc_packet.ch1); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
@@ -195,7 +195,7 @@ void EEPROMWriteInt(int p_address, int p_value)
 }
 
 //************************************************************************************************************************************************************************
-//this function will read a 2 byte integer from the eeprom at the specified address and address + 1
+//this function will read a 2 byte integer from the eeprom at the specified address and address + 1 **********************************************************************
 //************************************************************************************************************************************************************************
 unsigned int EEPROMReadInt(int p_address)
 {
@@ -207,14 +207,14 @@ unsigned int EEPROMReadInt(int p_address)
 //************************************************************************************************************************************************************************
 //initial main settings **************************************************************************************************************************************************
 //************************************************************************************************************************************************************************
-uint8_t invert_address = ~address[5]; //invert bits for reading so that telemetry packets have a different address
+const byte invert_address = ~address[5]; //invert bits for reading so that telemetry packets have a different address
 
 void setup()
-{ 
-//  Serial.begin(9600); //print value on a serial monitor
-
+{
+  //Serial.begin(9600); //print value on a serial monitor
+  
   calibrate_pots();
-
+  
   pinMode(PIN_LED, OUTPUT);
   pinMode(PIN_TX_BATTERY, INPUT);
   pinMode(PIN_BUTTON_CALIB, INPUT_PULLUP);
@@ -243,9 +243,7 @@ void loop()
 {
   receive_time();
   send_and_receive_data();
-
   read_pots();
-  
   TX_batt_check();
 }
 
@@ -273,8 +271,8 @@ void send_and_receive_data()
     {
       radio.read(&telemetry_packet, sizeof(telemetry_packet_size));
       
-      lastRxTime = millis(); //at this moment we have received the data
       RX_batt_check();
+      lastRxTime = millis(); //at this moment we have received the data
     }
   }
 }
@@ -284,7 +282,7 @@ void send_and_receive_data()
 //************************************************************************************************************************************************************************
 float val_TX_battery;
 unsigned long ledTime = 0;
-int ledState;
+bool ledState;
 
 void TX_batt_check()
 {
@@ -307,14 +305,14 @@ void TX_batt_check()
       digitalWrite(PIN_LED, ledState);
     }
   }
-//  Serial.println(val_TX_battery); //print value ​​on a serial monitor
+  //Serial.println(val_TX_battery); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
 //after receiving RF data, the monitored RX battery is activated *********************************************************************************************************
 //RX battery voltage(payload.RXbatt) < RX_MONITORED_VOLTAGE = LEDs TX, RX flash at a interval of 0.5s. Battery OK = LEDs TX, RX is lit ***********************************
 //************************************************************************************************************************************************************************
-int detect;
+bool detect;
 
 void RX_batt_check()
 {
@@ -334,7 +332,7 @@ void RX_batt_check()
     }
     digitalWrite(PIN_LED, ledState);
   }
-//  Serial.println(telemetry_packet.RX_batt_A1); //print value ​​on a serial monitor
+  //Serial.println(telemetry_packet.RX_batt_A1); //print value ​​on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
