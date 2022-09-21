@@ -132,7 +132,7 @@ void read_pots()
   rc_packet.ch4 = pots_value[3]; //A3
   rc_packet.ch5 = pots_value[4]; //A4
   
-  //Serial.println(rc_packet.ch1); //print value ​​on a serial monitor
+  //Serial.println(rc_packet.ch1); //print value on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
@@ -305,7 +305,7 @@ void TX_batt_check()
       digitalWrite(PIN_LED, ledState);
     }
   }
-  //Serial.println(val_TX_battery); //print value ​​on a serial monitor
+  //Serial.println(val_TX_battery); //print value on a serial monitor
 }
 
 //************************************************************************************************************************************************************************
