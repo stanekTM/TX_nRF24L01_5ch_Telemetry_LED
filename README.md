@@ -41,6 +41,6 @@ D13 - SCK
 ```
 
 ## Used libraries
-* <RF24.h>   https://github.com/nRF24/RF24 v1.3.9
+* <RF24.h>   https://github.com/nRF24/RF24
 * <EEPROM.h> Arduino standard library
 * <SPI.h>    Arduino standard library
