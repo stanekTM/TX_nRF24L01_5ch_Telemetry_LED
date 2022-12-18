@@ -94,7 +94,7 @@ rc_packet_size rc_packet; //create a variable with the above structure
 //************************************************************************************************************************************************************************
 struct telemetry_packet_size
 {
-  byte rssi;     //not used yet
+  byte rssi;        //not used yet
   float RX_batt_A1;
   float RX_batt_A2; //not used yet
 };
@@ -254,7 +254,7 @@ unsigned long lastRxTime = 0;
 
 void receive_time()
 {
-  if(millis() >= lastRxTime + 1000) //1s
+  if(millis() - lastRxTime > 1000) //1s
   {
     RFoff_check();
   }
@@ -290,7 +290,7 @@ void TX_batt_check()
   
   if (val_TX_battery <= TX_MONITORED_VOLTAGE)
   {
-    if (millis() >= ledTime + 200)
+    if (millis() - ledTime > 200)
     {
       ledTime = millis();
       
@@ -318,7 +318,7 @@ void RX_batt_check()
 {
   detect = telemetry_packet.RX_batt_A1 <= RX_MONITORED_VOLTAGE;
   
-  if (millis() >= ledTime + 500)
+  if (millis() - ledTime > 500)
   {
     ledTime = millis();
     
@@ -340,7 +340,7 @@ void RX_batt_check()
 //************************************************************************************************************************************************************************
 void RFoff_check()
 {
-  if (millis() >= ledTime + 100)
+  if (millis() - ledTime > 100)
   {
     ledTime = millis();
     
