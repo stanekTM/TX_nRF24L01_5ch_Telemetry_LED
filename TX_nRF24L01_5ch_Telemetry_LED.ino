@@ -278,8 +278,8 @@ void send_and_receive_data()
 //input measurement TX_BATTERY_VOLTAGE < TX_MONITORED_VOLTAGE = LED flash at a interval of 0.2s. Battery OK = LED TX is lit **********************************************
 //************************************************************************************************************************************************************************
 float val_TX_battery;
-unsigned long ledTime = 0;
-bool ledState;
+unsigned long led_time = 0;
+bool led_state;
 
 void TX_batt_check()
 {
@@ -287,19 +287,19 @@ void TX_batt_check()
   
   if (val_TX_battery <= TX_MONITORED_VOLTAGE)
   {
-    if (millis() - ledTime > 200)
+    if (millis() - led_time > 200)
     {
-      ledTime = millis();
+      led_time = millis();
       
-      if (ledState)
+      if (led_state)
       {
-        ledState = LOW;
+        led_state = LOW;
       }
       else
       {
-        ledState = HIGH;
+        led_state = HIGH;
       }
-      digitalWrite(PIN_LED, ledState);
+      digitalWrite(PIN_LED, led_state);
     }
   }
   //Serial.println(val_TX_battery); //print value on a serial monitor
@@ -315,19 +315,19 @@ void RX_batt_check()
 {
   detect = telemetry_packet.RX_batt_A1 <= RX_MONITORED_VOLTAGE;
   
-  if (millis() - ledTime > 500)
+  if (millis() - led_time > 500)
   {
-    ledTime = millis();
+    led_time = millis();
     
-    if (ledState >= !detect + HIGH)
+    if (led_state == detect)
     {
-      ledState = LOW;
+      led_state = LOW;
     }
     else
     {
-      ledState = HIGH;
+      led_state = HIGH;
     }
-    digitalWrite(PIN_LED, ledState);
+    digitalWrite(PIN_LED, led_state);
   }
   //Serial.println(telemetry_packet.RX_batt_A1); //print value ​​on a serial monitor
 }
@@ -337,19 +337,19 @@ void RX_batt_check()
 //************************************************************************************************************************************************************************
 void RFoff_check()
 {
-  if (millis() - ledTime > 100)
+  if (millis() - led_time > 100)
   {
-    ledTime = millis();
+    led_time = millis();
     
-    if (ledState)
+    if (led_state)
     {
-      ledState = LOW;
+      led_state = LOW;
     }
     else
     {
-      ledState = HIGH;
+      led_state = HIGH;
     }
-    digitalWrite(PIN_LED, ledState);
+    digitalWrite(PIN_LED, led_state);
   }
 }
  
