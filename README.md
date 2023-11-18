@@ -1,5 +1,6 @@
 # RC TX nRF24L01 5ch
-Surface 5 channel RC transmitter nRF24L01 with ATmega328P/16Mhz, for cars, boats and robots.
+Simple surface 5 channel RC transmitter for cars, boats and tanks.
+The hardware includes a low-cost nRF24L01+ transceiver and an ATmega328P processor.
 It contains the telemetry of the monitored RX voltage by means of a flashing LED indication.
 
 Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
