@@ -8,6 +8,7 @@ Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and rev
 This RC transmitter works with RC receiver from my repository [RX_nRF24L01_Telemetry_Motor_Servo](https://github.com/stanekTM/RX_nRF24L01_Telemetry_Motor_Servo)
 
 ## Function
+### LED mode:
 * Normal mode = LED TX is lit
 * TX battery voltage 1S LiPo (4.2V) < TX monitored voltage = TX LED flash at a interval of 0.2s
 * RX battery voltage 1S LiPo (4.2V) < RX monitored voltage = TX, RX LEDs flash at a interval of 0.5s
