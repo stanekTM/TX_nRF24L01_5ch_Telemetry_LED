@@ -2,7 +2,7 @@
 Surface 5 channel RC transmitter nRF24L01 with ATmega328P/16Mhz, for cars, boats and robots.
 It contains the telemetry of the monitored RX voltage by means of a flashing LED indication.
 
-Thanks to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
+Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
 
 This RC transmitter works with RC receiver from my repository [RX_nRF24L01_Telemetry_Motor_Servo](https://github.com/stanekTM/RX_nRF24L01_Telemetry_Motor_Servo)
 
